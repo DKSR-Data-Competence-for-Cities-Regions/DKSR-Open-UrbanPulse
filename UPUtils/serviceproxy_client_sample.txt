@@ -1,0 +1,58 @@
+short example on how to use the PersistenceQueryService proxy:
+
+
+import de.urbanpulse.outbound.PersistenceQueryServiceProxyFactory;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.eventbus.MessageConsumer;
+import io.vertx.core.json.JsonObject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import io.vertx.core.AbstractVerticle;
+import de.urbanpulse.outbound.PersistenceQueryServiceVertxEBProxy;
+
+public class Main extends AbstractVerticle {
+
+    private final Map<String, MessageConsumer<JsonObject>> consumers = new HashMap<>();
+
+    @Override
+    public void start() throws Exception {
+        String uniqueRequestHandle = UUID.randomUUID().toString();
+
+        MessageConsumer<JsonObject> queryConsumer = vertx.eventBus()
+                .consumer(uniqueRequestHandle, new Handler<Message<JsonObject>>() {
+                    @Override
+                    public void handle(Message<JsonObject> msg) {
+                        JsonObject body = msg.body();
+                        System.out.println("EB: " + body.encode());
+
+                        if (body.containsKey("abortingException")) {
+                            consumers.get(uniqueRequestHandle).unregister();
+                            consumers.remove(uniqueRequestHandle);
+                            // error during query execution
+                        } else if (body.getBoolean("isLast", false)) {
+                            consumers.get(uniqueRequestHandle).unregister();
+                            consumers.remove(uniqueRequestHandle);
+                            // success!                    
+                        } else {
+                            // just one batch that is not the last nor error
+                        }
+                    }
+                });
+        consumers.put(uniqueRequestHandle, queryConsumer);
+
+        PersistenceQueryServiceVertxEBProxy proxy = PersistenceQueryServiceProxyFactory.createProxy(vertx, "thePersistenceQuery");
+
+        proxy.query("2016-11-10T04:31:39.002Z", "2016-11-10T07:31:39.002Z", "451", 10, uniqueRequestHandle, (
+                AsyncResult<Void> asyncResult) -> {
+            if (asyncResult.failed()) {
+                queryConsumer.unregister();
+                consumers.remove(uniqueRequestHandle);
+                // could not start query execution
+            }
+        });
+
+    }
+}

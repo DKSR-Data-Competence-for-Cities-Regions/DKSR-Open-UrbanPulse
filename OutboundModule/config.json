@@ -1,0 +1,148 @@
+{
+    "MainVerticle": {
+        "security": {
+            "jdbc": {
+                "driverClassName": "org.postgresql.Driver",
+                "username": "postgres",
+                "password": "postgres123",
+                "url": "jdbc:postgresql://localhost:5432/urbanpulse",
+                "maxActive": 8,
+                "maxIdle": 8,
+                "initialSize": 1
+            },
+            "keycloak": {
+              "clientId": "urbanpulse",
+              "secret": "<client-secert>",
+              "apiBaseUrl": "http://localhost:9080/auth",
+              "realm": "ui"
+            }
+        }
+    },
+    "logEventBusContent": true,
+    "outboundDestination": "theOutbound",
+    "testNoUpdateListeners": false,
+    "hint": "sharedServerConfig may contain host,encrypt,keystore,keystorePassword and cipherSuites",
+    "sharedServerConfig": {
+        "host": "0.0.0.0",
+        "encrypt": true,
+        "keystore": "localhost_keystore.jks",
+        "keystorePassword": "changeit",
+        "cipherSuites": [
+            "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+            "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+            "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
+            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+            "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
+            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+            "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+            "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
+            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+            "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
+        ]
+    },
+    "outboundMailerConfig": {
+        "deployMailserver": false,
+        "mailServerConfig": {
+            "hostname": "smtp.strato.de",
+            "port": 465,
+            "username": "monitoring@urban-software-institute.com",
+            "password": "<PASSWORD>",
+            "starttls": "required",
+            "login": "required",
+            "ssl": true
+        },
+        "emailFormatter": {
+            "emailFormatterClass": "de.urbanpulse.dist.outbound.mailer.service.formatter.JsonToHTMLTableFormatter",
+            "emailFormatterConfig": {
+            }
+        },
+        "from": "monitoring@urban-software-institute.com (Monitoring Service)",
+        "minutesBetweenMails": 1,
+        "maxMessagesPerPeriod": 10
+    },
+    "clientConfig": {
+        "trustAll": true,
+        "queueWorkerCount": 1,
+        "queueBatchSize": 2000,
+        "queueCapacity": 10000
+    },
+    "wsServerConfig": {
+        "externalHost": "localhost",
+        "portSecure": 3210,
+        "portInsecure": 3211,
+        "basePathWithLeadingSlashOnly": "/OutboundInterfaces/outbound",
+        "comment": "OutboundInterfaces like in UP1"
+    },
+    "historicalDataRestConfig": {
+        "httpVerticleInstances": 2,
+        "sensorInformation": {
+            "451": "OWM example sensor"
+        },
+        "rules": {
+            "default_rule": {
+                "logAPIUsage": true,
+                "defaultFilters": {
+                    "requestFilters": {
+                        "maxIntervalSizeInMinutes": 100080
+                    },
+                    "eventFilters": {
+                        "eventParameterExcludeFilter": [
+                        ]
+                    }
+                },
+                "sidFilters": {
+                }
+            }
+        },
+        "roles_to_rules": {
+            "historic_data_reader": "default_rule"
+        },
+        "port": 4443
+    },
+    "loggingConfig": {
+        "level": "INFO",
+        "handlers": "java.util.logging.FileHandler, java.util.logging.ConsoleHandler,de.urbanpulse.transfer.AccessLogFileHandler",
+        "pattern": "%t/Outboundv%g.log",
+        "access_log_level": "INFO",
+        "access_log_pattern": "%t/ui-vertx-outbound-access-%g.log",
+        "patternInfo": "%t is the system TEMP folder, %g is the generation number to distinguish between rotating logs.",
+        "limit": "1024000",
+        "count": "5",
+        "formatter": "java.util.logging.SimpleFormatter"
+    },
+    "circuitBreakerOptions": {
+        "maxFailures": 5,
+        "timeout": 10000,
+        "fallbackOnFailure": false,
+        "resetTimeout": 10000
+    },
+    "metricsServiceConfig": {
+        "enabled": false,
+        "logMetrics": false,
+        "metricsInterval": 60000,
+        "metricsHandler": {
+            "de.urbanpulse.monitoring.HTTPMonitoringVerticle": {
+                "host": "0.0.0.0",
+                "port": 8888
+            }
+        }
+    },
+    "eventBusImplementation": {
+      "_class": "de.urbanpulse.eventbus.pulsar.PulsarEventbusFactory",
+      "class": "de.urbanpulse.eventbus.vertx.VertxEventbusFactory",
+      "url": "pulsar://localhost:6650",
+      "subscriptionName": "outbound-consumer",
+      "address": "theOutbound"
+    },
+    "upServiceConfig": {
+        "jdbc": {
+            "_comment_": "See https://vertx.io/docs/vertx-jdbc-client/java/",
+            "url": "jdbc:postgresql://localhost:5432/urbanpulse",
+            "driver_class": "org.postgresql.Driver",
+            "user": "postgres",
+            "password": "postgres123"
+        }
+    }
+}

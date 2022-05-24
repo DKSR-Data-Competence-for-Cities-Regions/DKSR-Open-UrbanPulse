@@ -1,0 +1,2 @@
+java -cp "application.jar;dependency-jars/*" io.vertx.core.Launcher run de.urbanpulse.cep.MainVerticle -conf ../config.json
+

@@ -1,0 +1,5 @@
+{
+  "main":"de.urbanpulse.dist.outbound.MainVerticle",
+
+  "auto-redeploy": true
+}

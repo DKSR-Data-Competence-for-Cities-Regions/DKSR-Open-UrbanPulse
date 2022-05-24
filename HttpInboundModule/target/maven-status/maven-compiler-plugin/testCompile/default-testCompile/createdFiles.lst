@@ -1,0 +1,9 @@
+de\urbanpulse\dist\inbound\http\auth\UPAuthHeaderDecoderTest.class
+de\urbanpulse\dist\inbound\http\HttpReceiverVerticleTest.class
+de\urbanpulse\dist\inbound\http\auth\MessageTimestampValidatorTest.class
+de\urbanpulse\dist\inbound\http\auth\MessageAuthenticatorTest.class
+de\urbanpulse\dist\inbound\http\HttpInboundCommandHandlerTest$1.class
+de\urbanpulse\dist\inbound\http\HttpInboundCommandHandlerTest.class
+de\urbanpulse\dist\inbound\http\MainVerticleTest$1TestMainVerticle.class
+de\urbanpulse\dist\inbound\http\MainVerticleTest.class
+de\urbanpulse\dist\inbound\http\VertxQueueTest.class

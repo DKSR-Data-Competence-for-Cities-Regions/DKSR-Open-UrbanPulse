@@ -1,0 +1,7 @@
+de\urbanpulse\cep\CEPCommandHandlerSetupTest.class
+de\urbanpulse\cep\CEPEventReceiverTest.class
+de\urbanpulse\cep\EsperUpdateListenerVertxTest.class
+de\urbanpulse\cep\CEPCommandHandlerTest.class
+de\urbanpulse\cep\MainVerticleTest.class
+de\urbanpulse\utils\ConfigGenerator.class
+de\urbanpulse\cep\EventBeanConverterTest.class

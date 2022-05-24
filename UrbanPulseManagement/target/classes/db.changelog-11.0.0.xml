@@ -1,0 +1,443 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <property name="unicodeVarcharType" value="nvarchar(MAX)" dbms="mssql"/>
+    <property name="unicodeVarcharType" value="varchar" dbms="postgresql"/>
+
+    <changeSet author="[ui!]" id="1607503430785-1">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_transactions"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_transactions">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_trans__3214EC277748BAF2"/>
+            </column>
+            <column name="connectionid" type="VARCHAR(255)"/>
+            <column name="txid" type="VARCHAR(255)"/>
+            <column name="txstate" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-2">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_modules"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_modules">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_modul__3214EC278AAC35DE"/>
+            </column>
+            <column name="lastheartbeat" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column defaultValueBoolean="false" name="mailsent" type="BOOLEAN"/>
+            <column name="moduletype" type="VARCHAR(255)"/>
+            <column name="modulestate" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-4">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_categories"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_categories">
+            <column name="description" type="${unicodeVarcharType}"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_categories"/>
+            </column>
+            <column name="parent_id" type="VARCHAR(36)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-5">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_categoriesprojection"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_categoriesprojection">
+            <column name="category_id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_categoriesprojection"/>
+            </column>
+            <column name="sensor_id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_categoriesprojection"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-6">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_connectors"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_connectors">
+            <column name="description" type="${unicodeVarcharType}"/>
+            <column name="secretkey" type="VARCHAR(255)"/>
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_connectors"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-7">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_event_types"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_event_types">
+            <column name="description" type="${unicodeVarcharType}"/>
+            <column name="eventparameter" type="${unicodeVarcharType}"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_event_types"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="UNQ_up_event_types_0" tableName="up_event_types"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-8">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_inbound_setup"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_inbound_setup">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_inbou__3214EC27C52F5A0C"/>
+            </column>
+            <column name="moduleid" type="VARCHAR(255)"/>
+            <column name="setupjson" type="${unicodeVarcharType}"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-9">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_metadata"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_metadata">
+            <column name="rel" type="VARCHAR(255)"/>
+            <column name="val" type="${unicodeVarcharType}"/>
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_metadata"/>
+            </column>
+            <column name="sensor_id" type="VARCHAR(36)"/>
+            <column name="category_id" type="VARCHAR(36)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-10">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_permissions"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_permissions">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_permi__3214EC2708ACC4B6"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-11">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_persistencev3_setup"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_persistencev3_setup">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_persi__3214EC27DFFB5387"/>
+            </column>
+            <column name="moduleid" type="VARCHAR(255)"/>
+            <column name="setupjson" type="${unicodeVarcharType}"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-12">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_role_permissions"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_role_permissions">
+            <column name="permission_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_role___32538CA6C26B9C07"/>
+            </column>
+            <column name="role_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_role___32538CA6C26B9C07"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-13">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_roles"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_roles">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_roles__3214EC276C4B1CAB"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-14">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_sensors"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_sensors">
+            <column name="description" type="${unicodeVarcharType}"/>
+            <column name="location" type="${unicodeVarcharType}"/>
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_sensors"/>
+            </column>
+            <column name="connector_id" type="VARCHAR(36)"/>
+            <column name="eventtype_id" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-16">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_statements"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_statements">
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="query" type="${unicodeVarcharType}"/>
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_statements"/>
+            </column>
+            <column name="comment" type="${unicodeVarcharType}"/>
+        </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="UNQ_up_statements_0" tableName="up_statements"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-17">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_update_listeners"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_update_listeners">
+            <column name="authjson" type="VARCHAR(255)"/>
+            <column name="hmackey" type="VARCHAR(255)"/>
+            <column name="statement" type="VARCHAR(36)"/>
+            <column name="target" type="${unicodeVarcharType}"/>
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_update_listeners"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-18">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_user_permissions"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_user_permissions">
+            <column name="permission_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_user___0EA8F98AE3C2D2A1"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_user___0EA8F98AE3C2D2A1"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-19">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_user_roles"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_user_roles">
+            <column name="role_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_user___9D9286BCC7C78310"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_user___9D9286BCC7C78310"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-20">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_users"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_users">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_users__3214EC27E14CB49A"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="passwordhash" type="VARCHAR(255)"/>
+            <column name="secretkey" type="VARCHAR(255)"/>
+        </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="UNQ_up_users_0" tableName="up_users"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-21">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_virtual_sensors"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_virtual_sensors">
+            <column name="description" type="${unicodeVarcharType}"/>
+            <column name="eventtypeids" type="${unicodeVarcharType}"/>
+            <column name="statementids" type="${unicodeVarcharType}"/>
+            <column name="id" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_virtual_sensors"/>
+            </column>
+            <column name="category_id" type="VARCHAR(36)"/>
+            <column name="resultstatement_id" type="VARCHAR(36)"/>
+            <column defaultValue="NULL::character varying" name="resulteventtype_id" type="VARCHAR(36)"/>
+            <column name="targets" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-22">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <indexExists indexName="INDEX_up_transactions_txId" tableName="up_transactions"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="INDEX_up_transactions_txId" tableName="up_transactions">
+            <column name="txid"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-23">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="up_categoriesprojection_up_categories" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="up_categoriesprojection" constraintName="up_categoriesprojection_up_categories" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_categories" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-24">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="up_categories_up_categories" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="up_categories" constraintName="up_categories_up_categories" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_categories" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-25">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="up_metadata_up_categories" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="up_metadata" constraintName="up_metadata_up_categories" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_categories" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-26">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="up_virtual_sensors_up_categories" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="up_virtual_sensors" constraintName="up_virtual_sensors_up_categories" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_categories" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-27">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="up_sensors_up_connectors" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="connector_id" baseTableName="up_sensors" constraintName="up_sensors_up_connectors" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_connectors" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-29">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="up_sensors_up_event_types" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="eventtype_id" baseTableName="up_sensors" constraintName="up_sensors_up_event_types" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_event_types" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-30">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="up_virtual_sensors_result_up_event_type" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="resulteventtype_id" baseTableName="up_virtual_sensors" constraintName="up_virtual_sensors_result_up_event_type" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_event_types" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-31">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="prlprmissionsprmssonid" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="up_role_permissions" constraintName="prlprmissionsprmssonid" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_permissions" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-32">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="psrprmissionsprmssonid" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="up_user_permissions" constraintName="psrprmissionsprmssonid" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_permissions" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-33">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="prolepermissionsroleid" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="up_role_permissions" constraintName="prolepermissionsroleid" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_roles" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-34">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="up_user_roles_role_id" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="up_user_roles" constraintName="up_user_roles_role_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_roles" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-35">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="up_categoriesprojection_up_sensors" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="sensor_id" baseTableName="up_categoriesprojection" constraintName="up_categoriesprojection_up_sensors" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_sensors" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-36">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="up_metadata_up_sensors" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="sensor_id" baseTableName="up_metadata" constraintName="up_metadata_up_sensors" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_sensors" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-38">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="up_update_listeners_up_statements" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="statement" baseTableName="up_update_listeners" constraintName="up_update_listeners_up_statements" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_statements" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-39">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="up_virtual_sensors_result_up_statements" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="resultstatement_id" baseTableName="up_virtual_sensors" constraintName="up_virtual_sensors_result_up_statements" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_statements" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-40">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="puserpermissionsuserid" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="up_user_permissions" constraintName="puserpermissionsuserid" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_users" validate="true"/>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-42">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="up_user_roles_user_id" />
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="up_user_roles" constraintName="up_user_roles_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="up_users" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,12 @@
+{
+    "inputAddress": "thePersistence",
+    "queryAddress": "thePersistenceQuery",
+    "logEventBusContent": false,
+    
+    "_comment": "if you use any of the SQL storage modules (HyperSQLFirstLevelStorage/JPASecondLevelStorage), the inbound instances MUST be 1 at the moment because we don't handle concurrency correctly yet for SQL.",
+    "inboundInstances": 1,
+    
+    "outboundInstances": 2
+    
+}
+

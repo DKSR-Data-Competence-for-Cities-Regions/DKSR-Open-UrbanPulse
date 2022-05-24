@@ -1,0 +1,11 @@
+de\urbanpulse\dist\jee\entities\VirtualSensorEntity.class
+de\urbanpulse\dist\jee\entities\UpdateListenerEntity.class
+de\urbanpulse\dist\jee\entities\UserEntity.class
+de\urbanpulse\dist\jee\entities\EventTypeEntity.class
+de\urbanpulse\dist\jee\entities\RoleEntity.class
+de\urbanpulse\dist\jee\entities\AbstractUUIDEntity.class
+de\urbanpulse\dist\jee\entities\PermissionEntity.class
+de\urbanpulse\dist\jee\entities\CategoryEntity.class
+de\urbanpulse\dist\jee\entities\ConnectorEntity.class
+de\urbanpulse\dist\jee\entities\SensorEntity.class
+de\urbanpulse\dist\jee\entities\StatementEntity.class

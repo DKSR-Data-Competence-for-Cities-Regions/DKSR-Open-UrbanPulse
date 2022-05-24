@@ -1,0 +1,15 @@
+de\urbanpulse\transfer\vertx\AbstractMainVerticleTest$MainVerticleImpl.class
+de\urbanpulse\util\ConcatIteratorTest.class
+de\urbanpulse\util\UPStatusUtilsTest.class
+de\urbanpulse\upservice\UPServiceVerticleTest.class
+de\urbanpulse\eventbus\vertx\VertxMessageConsumerTest.class
+de\urbanpulse\outbound\QueryConfigTest.class
+de\urbanpulse\eventbus\EventbusFactoryTest.class
+de\urbanpulse\eventbus\helpers\EventBusImplementationDefaultsHolderTest.class
+de\urbanpulse\eventbus\vertx\VertxEventbusFactoryTest.class
+de\urbanpulse\util\HmacUtilsTest.class
+de\urbanpulse\util\server\HttpServerFactoryTest.class
+de\urbanpulse\eventbus\vertx\VertxMessageProducerTest.class
+de\urbanpulse\transfer\vertx\AbstractMainVerticleTest.class
+de\urbanpulse\transfer\vertx\AbstractMainVerticleMockitoTest$MainVerticleImpl.class
+de\urbanpulse\transfer\vertx\AbstractMainVerticleMockitoTest.class

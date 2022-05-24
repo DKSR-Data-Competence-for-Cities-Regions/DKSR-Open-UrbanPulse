@@ -1,0 +1,101 @@
+/** Font import *****************************************************************/
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,400italic,600,600italic,700,700italic,800,800italic');
+
+@font-face {
+    font-family: "ff-din-web-n3";
+    font-style: normal;
+    font-weight: 300;
+    src: local("DIN-Light"), url("../fonts/dinweb-light-woff.woff") format("woff");
+}
+@font-face {
+    font-family: "ff-din-web-n4";
+    font-style: normal;
+    font-weight: 400;
+    src: local("DIN-Regular"), url("../fonts/dinweb-woff.woff") format("woff");
+}
+@font-face {
+    font-family: "ff-din-web-n6";
+    font-style: normal;
+    font-weight: 600;
+    src: local("DIN-Medium"), url("../fonts/dinweb-medium-woff.woff") format("woff");
+}
+
+
+/** Basic Styles ****************************************************************/
+body {
+  font-family: "Open Sans", Helvetica, Arial, san-serif;
+  font-size: 1.5em;
+  font-weight: 300;
+  letter-spacing: 0.025em;
+  color: #fff;
+  background: #111216 url(../images/body-background-darker.jpg) center top no-repeat;
+  background-size: 100% auto;
+}
+
+
+/** ui! Theme ******************************************************************/
+.navbar-inverse .navbar-brand {
+	color: #ffffff;
+}
+.header-ui-logo {
+	font-family: "ff-din-web-n4";
+	font-size: 1.25em;
+	margin: 0.3em 0 0;
+	color: #cad500;
+}
+.header-ui-logo span {
+	color: #fff;
+}
+.container.content {
+	margin-top: 100px;
+}
+h1, h2, h3, h4, h5 {
+	font-weight: 300;
+}
+.first-headline {
+	margin-bottom: 1em;
+	color: #cad500;
+}
+h4 {
+	margin-bottom: 1em;
+	color: #cad500;
+}
+
+b {
+	font-weight: 500;
+}
+
+.badge {
+    background-color: rgba(0,0,0,.75);
+    border-radius: 6px;
+    color: #fff;
+    display: inline-block;
+    font-size: .75em;
+    font-weight: 300;
+    line-height: 1;
+    min-width: 10px;
+    margin: 2px 0 0 0;
+    padding: 5px 7px 5px 7px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.current-timestamp {
+	float: right;
+	color: #ededed;
+	font-size: .5em;
+	margin: 6px 12px 0 0;
+}
+.refresh-page {
+	float: right;
+	font-size: .5em;
+	color: #cad500;
+	margin: 6px 0 0 0;	
+}
+a.refresh-page:hover,
+a.refresh-page:focus {
+	color: #fff !important;
+}
+footer {
+	margin-top: 3em; 
+}

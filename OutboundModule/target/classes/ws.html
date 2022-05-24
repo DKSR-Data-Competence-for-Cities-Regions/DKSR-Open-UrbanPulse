@@ -1,0 +1,97 @@
+<html ng-app="wsApp">
+    <head>
+        <style>
+
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+
+        <script type="text/javascript">
+
+            var wsApp = angular.module('wsApp', []);
+            wsApp.service('webSocketService', function () {
+            });
+
+            wsApp.controller('AppController', ['$scope', '$window', 'webSocketService', function ($scope, $window, wss) {
+                    var ws = undefined;
+
+                    $scope.hasConnection = false;
+                    
+                    wss.connect = function (dest, callback) {
+                        if (ws !== undefined) {
+                            ws.close();
+                        }
+                        ws = new WebSocket(dest);
+                        ws.onopen = function () {
+                            console.log("ws connected");
+                            $scope.$apply(function () {
+                                $scope.hasConnection = true;    
+                            });
+                        };
+                        ws.onclose = function () {
+                            console.log("ws closed");
+                            $scope.$apply(function () {
+                                $scope.hasConnection = false;    
+                            });
+                        };
+                        ws.onerror = function () {
+                            console.log("ws error");
+                            $scope.$apply(function () {
+                                $scope.hasConnection = false;    
+                            });
+                        };
+                        ws.onmessage = function (e) {
+                            callback(e);
+                        };
+                    };
+
+                    $scope.connectWsUrl = function (wsUrl) {
+                        $scope.messagebox = [];
+                        wss.connect(wsUrl, function (e) {
+                            $scope.messagebox.unshift(e.data);
+                            if ($scope.messagebox.length > 20) {
+                                $scope.messagebox = $scope.messagebox.slice(0, 20);
+                            }
+                            $scope.$apply();
+                        });
+                    };
+
+                    $scope.getWsUrl = function () {
+                        if (location.href.substr(0, 5) === 'https') {
+                            var tempUrl = location.href.replace('https://', '');
+                            return 'wss://' + tempUrl.replace(/\/+/g, '/').replace(/\/+$/, '');
+                        } else if (location.href.substr(0, 5) === 'http:') {
+                            var tempUrl = location.href.replace('http://', '');
+                            return 'ws://' + tempUrl.replace(/\/+/g, '/').replace(/\/+$/, '');
+                        } else {
+                            return null;
+                        }
+                    };
+
+                    var wsUrl = $scope.getWsUrl();
+                    if (wsUrl) {
+                        $scope.connectWsUrl(wsUrl);
+                    } else {
+                        console.error("failed to generate websocket URL");
+                    }
+
+                }]);
+
+        </script>
+        <title>Realtime data</title>
+    </head>
+    <body ng-controller="AppController">
+        <div ng-hide="hasConnection">
+            Websocket not connected - no realtime data will be shown!
+        </div>
+        <div ng-show="hasConnection">
+            <div>Websocket connected</div>
+            <div>
+                <h1>Realtime data</h1>
+            </div>
+
+            <hr>
+            <div>Received events:</div>
+            <div ng-repeat="message in messagebox track by $index"><div>{{message}}</div></div>
+        </div>
+    </body>
+</html>

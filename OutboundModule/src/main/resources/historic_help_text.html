@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Help</title>
+     <style>
+      dt {
+          font-weight: bold;
+          padding-top: 1em
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Possible queries:</h1>
+    <dl>
+      <dt>/sensordata?sid=&lt;UUID&gt;&amp;since=&lt;yyyy-MM-dd'T'HH:mm:ss.SSSXX&gt;&amp;until=&lt;yyyy-MM-dd'T'HH:mm:ss.SSSXX&gt;</dt>
+      <dd>Returns all events for the given SID between the given timestamps.</dd>
+      
+      <dt>/sensordata?sid=&lt;UUID&gt;</dt>
+      <dd>Returns the latest event for the given SID.</dd>
+
+      <dt>/sensordata?eventtype=&lt;UUID&gt;&amp;since=&lt;yyyy-MM-dd'T'HH:mm:ss.SSSXX&gt;&amp;until=&lt;yyyy-MM-dd'T'HH:mm:ss.SSSXX&gt;</dt>
+      <dd>Returns all events for all sensors with the given eventtype-ID between the given timestamps.</dd>
+      
+      <dt>/sensordata?eventtype=&lt;UUID&gt;</dt>
+      <dd>Returns the latest event for each sensor with the given eventtype-ID.</dd>
+      
+      <dt>/sensordata?eventtypeName=&lt;String&gt;&amp;since=&lt;yyyy-MM-dd'T'HH:mm:ss.SSSXX&gt;&amp;until=&lt;yyyy-MM-dd'T'HH:mm:ss.SSSXX&gt;</dt>
+      <dd>Returns all events for all sensors with the given eventtype-name between the given timestamps.</dd>
+      
+      <dt>/sensordata?eventtypeName=&lt;String&gt;</dt>
+      <dd>Returns the latest event for each sensor with the given eventtype-name.</dd>
+    </dl>
+  </body>
+</html>

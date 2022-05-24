@@ -1,0 +1,15 @@
+de\urbanpulse\persistence\v3\storage\cache\HyperSQLFirstLevelStorageVertxUnitTest.class
+de\urbanpulse\persistence\v3\inbound\InboundVerticleTest.class
+de\urbanpulse\persistence\v3\storage\DummySecondLevelStorage.class
+de\urbanpulse\persistence\v3\storage\InboundQueryHelperTest.class
+de\urbanpulse\persistence\v3\storage\JPASecondLevelStorageServiceImplTest.class
+de\urbanpulse\persistence\v3\ServiceTranslatorTest.class
+de\urbanpulse\persistence\v3\inbound\PrioritizingHashMapTest.class
+de\urbanpulse\persistence\v3\storage\cache\NullFirstLevelStorageTest.class
+de\urbanpulse\persistence\v3\LogHelperTest.class
+de\urbanpulse\persistence\v3\storage\cache\HyperSQLFirstLevelStorageMockitoTest.class
+de\urbanpulse\persistence\v3\storage\PredefinedEvents.class
+de\urbanpulse\persistence\v3\storage\TestStorageServiceImpl.class
+de\urbanpulse\persistence\v3\storage\AbstractSecondLevelStorageTest.class
+de\urbanpulse\persistence\v3\storage\StorageServiceProviderVerticleTest.class
+de\urbanpulse\persistence\v3\outbound\BatchSenderTest.class

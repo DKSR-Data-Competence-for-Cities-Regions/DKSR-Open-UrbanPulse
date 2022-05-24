@@ -1,0 +1,36 @@
+{
+    "inputAddress": "thePersistence",
+    "queryAddress": "thePersistenceQuery",
+    "querySecondLevelAddress": "thePersistenceSecondLevelQuery",
+    "pullAddress": "thePersistencePull",
+    "logEventBusContent": false,
+
+    "_comment": "if you use any of the SQL storage modules (HyperSQLFirstLevelStorage/JPASecondLevelStorage), the inbound instances MUST be 1 at the moment because we don't handle concurrency correctly yet for SQL.",
+    "inboundInstances": 1,
+
+    "loggingConfig": {
+        "level" : "INFO",
+        "handlers": "java.util.logging.ConsoleHandler",
+        "limit": "1024000",
+        "count": "5",
+        "formatter": "java.util.logging.SimpleFormatter"
+    },
+
+    "_comment2": "Optimal number for JPA is one as our persistence doesn't really support multiple threads at the moment.",
+    "_comment3": "An optimal number is hard to define. During tests on a local machine around 1 instance per 1000 events/second was sufficient. At the moment the threadpool that runs the worker-verticles has a size of 20. There shouldn't be more worker than that.",
+    "secondLevelStorageInstances": 1,
+    "outboundInstances": 8,
+    "circuitBreakerOptions": {
+        "maxFailures": 5,
+        "timeout": 10000,
+        "fallbackOnFailure": false,
+        "resetTimeout": 10000
+    },
+    "eventBusImplementation": {
+      "_class": "de.urbanpulse.eventbus.pulsar.PulsarEventbusFactory",
+      "class": "de.urbanpulse.eventbus.vertx.VertxEventbusFactory",
+      "url": "pulsar://localhost:6650",
+      "subscriptionName": "persistence-consumer",
+      "address": "thePersistence"
+    }
+}

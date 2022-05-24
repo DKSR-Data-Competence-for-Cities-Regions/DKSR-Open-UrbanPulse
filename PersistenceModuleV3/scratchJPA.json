@@ -1,0 +1,18 @@
+{
+    "storageConfig": {
+        "secondLevelConfig": {
+            "implementation": "de.urbanpulse.persistence.v3.storage.JPASecondLevelStorage",
+            "persistenceMap": {
+                "javax.persistence.jdbc.url": "jdbc:postgresql://localhost/usi",
+                "javax.persistence.jdbc.user": "usi",
+                "javax.persistence.jdbc.password": "usipw",
+                "javax.persistence.jdbc.driver": "org.postgresql.Driver",
+                "de.urbanpulse.eventTableName": "jpa_events"
+            }
+        },
+        "firstLevelConfig": {
+            "implementation": "de.urbanpulse.persistence.v3.storage.cache.HyperSQLFirstLevelStorage",
+            "maxCachedEventsPerSid": 100
+        }
+    }
+}

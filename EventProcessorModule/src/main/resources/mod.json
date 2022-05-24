@@ -1,0 +1,5 @@
+{
+  "main":"de.urbanpulse.cep.MainVerticle",
+
+  "auto-redeploy": true
+}

@@ -1,0 +1,13 @@
+de\urbanpulse\auth\upsecurityrealm\shiro\UpShiroAuthTest.class
+de\urbanpulse\auth\upsecurityrealm\shiro\SqlRealmTest.class
+de\urbanpulse\dist\jee\upsecurityrealm\hmac\HasherTest.class
+de\urbanpulse\dist\jee\upsecurityrealm\hmac\MessageTimestampValidatorTest.class
+de\urbanpulse\dist\jee\upsecurityrealm\UPCredentialsMatcherTest.class
+de\urbanpulse\dist\jee\upsecurityrealm\hmac\UPHMACSecurityRealmTest.class
+de\urbanpulse\dist\jee\upsecurityrealm\UPSecurityRealmTest$1.class
+de\urbanpulse\dist\jee\upsecurityrealm\cors\CorsFilterTest.class
+de\urbanpulse\dist\jee\upsecurityrealm\UPPasswordServiceTest.class
+de\urbanpulse\dist\jee\upsecurityrealm\hmac\UpHmacAuthenticationFilterTest.class
+de\urbanpulse\dist\jee\upsecurityrealm\UPMultiRealmAuthenticatorTest.class
+de\urbanpulse\dist\jee\upsecurityrealm\UPSecurityRealmTest.class
+de\urbanpulse\dist\jee\upsecurityrealm\helpers\UserManagementDAOInitializerTest.class

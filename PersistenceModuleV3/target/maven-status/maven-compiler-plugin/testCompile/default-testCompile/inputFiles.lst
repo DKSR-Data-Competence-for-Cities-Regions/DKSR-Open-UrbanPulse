@@ -1,0 +1,15 @@
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\LogHelperTest.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\storage\DummySecondLevelStorage.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\storage\StorageServiceProviderVerticleTest.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\inbound\PrioritizingHashMapTest.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\storage\cache\NullFirstLevelStorageTest.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\storage\TestStorageServiceImpl.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\ServiceTranslatorTest.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\inbound\InboundVerticleTest.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\storage\PredefinedEvents.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\storage\InboundQueryHelperTest.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\storage\cache\HyperSQLFirstLevelStorageMockitoTest.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\storage\AbstractSecondLevelStorageTest.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\outbound\BatchSenderTest.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\storage\JPASecondLevelStorageServiceImplTest.java
+C:\DKSR\opensourceurbanpulse\PersistenceModuleV3\src\test\java\de\urbanpulse\persistence\v3\storage\cache\HyperSQLFirstLevelStorageVertxUnitTest.java

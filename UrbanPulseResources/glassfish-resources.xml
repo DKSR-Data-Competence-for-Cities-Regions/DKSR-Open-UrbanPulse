@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE resources PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN" "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
+<resources>
+    <!-- NOTE: when deploying as EAR/WAR file with this file being placed in the EAR/WAR's META-INF/WEB_INF folder,
+    glassfish prefixes the JNDI names defined here with "java:app/" to use the application-wide scope (EAR/WAR-wide),
+    so when referencing them in code, use e.g. "java:app/jms/AnalyticsInboundQueue"
+
+    when instead using "asadmin add-resources glassfish-resources.xml"
+    (as Netbeans does when you "run" the EAR/WAR project) they are created as global resources ("java:global/" prefix or none)
+    -->
+
+
+
+    <!-- here you can paste a connection pool from GF 4.0 domain.xml for your database, this is just an example - tweak accordingly!-->
+    <jdbc-connection-pool datasource-classname="org.postgresql.ds.PGSimpleDataSource" name="PostgresPool" res-type="javax.sql.DataSource">
+        <property name="User" value="postgres"></property>
+        <property name="BinaryTransfer" value="true"></property>
+        <property name="UnknownLength" value="2147483647"></property>
+        <property name="DatabaseName" value="urbanpulse"></property>
+        <property name="ProtocolVersion" value="0"></property>
+        <property name="Ssl" value="false"></property>
+        <property name="LogLevel" value="0"></property>
+        <property name="Url" value="jdbc:postgresql://localhost:5432/urbanpulse?loginTimeout=0&amp;socketTimeout=0&amp;prepareThreshold=5&amp;unknownLength=2147483647&amp;tcpKeepAlive=false&amp;binaryTransfer=true&amp;disableColumnSanitiser=false"></property>
+        <property name="LoginTimeout" value="0"></property>
+        <property name="PrepareThreshold" value="5"></property>
+        <property name="ServerName" value="localhost"></property>
+        <property name="SocketTimeout" value="0"></property>
+        <property name="PortNumber" value="5432"></property>
+        <property name="SendBufferSize" value="-1"></property>
+        <property name="TcpKeepAlive" value="false"></property>
+        <property name="Password" value="postgres123"></property>
+        <property name="ReceiveBufferSize" value="-1"></property>
+    </jdbc-connection-pool>
+
+    <!-- for dist. UP: ensure this points to your local pool defined above -->
+    <jdbc-resource pool-name="PostgresPool" jndi-name="UPManagement"></jdbc-resource>
+
+    <!-- for Dashboard:  ensure this points to your local pool defined above  -->
+    <jdbc-resource pool-name="PostgresPool" jndi-name="DashboardDS"></jdbc-resource>
+
+	<jdbc-resource pool-name="PostgresPool" jndi-name="CockpitV2"></jdbc-resource>
+
+
+
+    <!-- Configure BlockedThreadCheckInterval -->
+    <custom-resource enabled="true" jndi-name="vertx/BlockedThreadCheckInterval" object-type="user" res-type="java.lang.Integer" factory-class="org.glassfish.resources.custom.factory.PrimitivesAndStringFactory">
+        <property name="value" value="1000"/>
+    </custom-resource>
+
+</resources>

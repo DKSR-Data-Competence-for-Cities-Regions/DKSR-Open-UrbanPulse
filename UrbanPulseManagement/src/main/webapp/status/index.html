@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html ng-app="statusPageApp">
+<head>
+<meta charset="UTF-8" />
+<title>[ui!] UrbanPulse Status</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.18.3/angular-translate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.18.3/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/bootstrap-theme.css">
+<link rel="stylesheet" href="css/screen.css">
+
+</head>
+
+<body ng-controller="StatusPageController">
+<header>
+    <nav class="navbar navbar-fixed-top navbar-inverse">
+        <div class="container">
+          <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="#">[ui!] UrbanPulse Status</a></li>
+            </ul>
+              
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                      {{'LANGUAGE' | translate }} <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li ng-repeat="lang in supportedLanguages | orderBy:'name'">
+                        <a href="#" ng-click="setLanguage(lang.key)">{{lang.name}}</a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="navbar-header">
+                    <a class="navbar-brand" href="#">
+                <span class="header-ui-logo">[<span>ui!</span>]</span> the urban institute<small><sup>&reg;</sup></small>
+                    </a>
+                </li>
+              </ul>
+          </div><!-- /.nav-collapse -->
+        </div><!-- /.container -->
+    </nav>
+</header>
+
+<div class="container content">
+	<div class="row">
+	  <div class="col-xs-12 col-md-12">
+                <h2 class="first-headline">
+                      [ui!] UrbanPulse Status 
+                      <button class="refresh-page btn btn-xs btn-link" href="#" ng-click="updateStatusPageData(true)">
+                              <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                      </button>
+                      <span class="current-timestamp"><b translate="LAST_STATUS_UPDATE_PREFIX"></b> {{lastUpdate || 0}} {{"LAST_STATUS_UPDATE_SUFFIX" | translate}}</span>
+                </h2>
+		
+                <!-- Status ok -->
+                <div class="alert alert-success" role="alert" ng-if="!errors">
+                  <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> {{'UP_EVERYTHING_FINE' | translate}}
+                </div>
+			<!-- Status fail -->
+                <div class="alert alert-danger" role="alert" ng-if="errors">                    
+                    <span class="glyphicon glyphicon-fire" aria-hidden="true"></span> {{'UP_PROBLEM_ENCOUNTERED' | translate}}: 
+                    <ul>
+                      <li ng-repeat="error in errors">{{error.message | translate:error.parameters}}</li>
+                    </ul>
+                                      
+                </div>
+	  </div><!--/.col-->
+	  
+            <div class="col-xs-12 col-sm-3" ng-if="Object.keys(displayData).length !== 0">
+              <h5>Module:</h5>
+              <div class="list-group" >
+                <a ng-repeat="(type, modules) in displayData" href="#" ng-click="setSelectedModuleType(type)" class="list-group-item" ng-class="getModuleListStyle(modules.sumState)">{{type}} <span class="badge">{{modules.instances.length}}</span></a>
+              </div>
+            </div><!--/.col-->
+
+            <div class="col-xs-12 col-sm-4" ng-if="selectedModuleType">		
+              <h5>{{selectedModuleType}}</h5> 
+              <div class="list-group">
+                  <a href="#" ng-repeat="module in displayData[selectedModuleType].instances" class="list-group-item" ng-class="getModuleListStyle(getModuleState(module.moduleState))">
+                      {{selectedModuleType}} {{$index + 1}}<div><small>{{module.moduleId}} | {{module.moduleState}}</small></div>
+                  </a>
+                  <a ng-repeat="item in getMissingModuleCount(selectedModuleType) track by $index" class="list-group-item" ng-class="'list-group-item-danger'">
+                      {{selectedModuleType}} {{displayData[selectedModuleType].length + $index + 1}} <div><small translate="MISSING"></small></div>
+                  </a>
+              </div>
+            </div><!--/.col-->
+
+            <div class="col-xs-12 col-sm-5" ng-if="statusData">
+                          <h5>Details:</h5> 
+                          <pre>{{getPrettyPrinted(statusData)}}</pre>
+            </div><!--/.col-->
+	</div><!--/.row-->
+</div><!--/.container-->
+
+
+<footer>
+	<p class="text-center">&copy; 2019 [ui!] - {{'ALL_RIGHTS_RESERVED' | translate}}</p>
+</footer>
+
+<script src="js/custom.js"></script>
+
+</body>
+</html>

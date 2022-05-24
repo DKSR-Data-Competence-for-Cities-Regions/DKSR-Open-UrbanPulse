@@ -1,0 +1,5 @@
+{
+  "main":"de.urbanpulse.persistence.MainVerticle",
+
+  "auto-redeploy": true
+}

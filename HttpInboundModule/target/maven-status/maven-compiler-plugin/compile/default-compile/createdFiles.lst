@@ -1,0 +1,7 @@
+de\urbanpulse\dist\inbound\http\HttpReceiverVerticle.class
+de\urbanpulse\dist\inbound\http\auth\UPAuthHeaderDecoder.class
+de\urbanpulse\dist\inbound\http\VertxQueue.class
+de\urbanpulse\dist\inbound\http\HttpInboundCommandHandler.class
+de\urbanpulse\dist\inbound\http\auth\MessageTimestampValidator.class
+de\urbanpulse\dist\inbound\http\MainVerticle.class
+de\urbanpulse\dist\inbound\http\auth\MessageAuthenticator.class

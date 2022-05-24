@@ -1,0 +1,59 @@
+{
+    "startDelay": 2000,
+    "logEventBusContent": true,
+    "clientConfig": {
+        "logMessages": true,
+        "queueWorkerCount": 2,
+        "queueBatchSize": 100000,
+        "lookBackMSec": 0,
+        "enforceTimestamp": true,
+        "enforceHmac": true,
+        "host": "localhost",
+        "port": 40777,
+        "keepAlive": true,
+        "comment": "keepAlive just means keepAlive serverside support - the client has to enable it too on the requests",
+        "encrypt": true,
+        "keystore": "localhost_keystore.jks",
+        "keystorePassword": "changeit",
+        "cipherSuites": [
+            "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+            "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+            "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
+            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+            "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
+            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+            "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+            "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
+            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+            "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
+        ]
+    },
+    "comment": "if cipherSuites is empty or missing, the Java defaults will be used (see http://docs.oracle.com/javase/8/docs/technotes/guides/security/SunProviders.html)",
+    "comment2": "everything from clientConfig can be supplied by the setup master if added to the setupjson field of the inbound config table",
+    "comment3": "note however that things like host/port should best not be assigned in a possibly random way",
+    "comment4": "as long as the port differs, you may deploy multiple instances on the same server",
+    "loggingConfig": {
+        "level": "INFO",
+        "handlers": "java.util.logging.FileHandler, java.util.logging.ConsoleHandler,de.urbanpulse.transfer.AccessLogFileHandler",
+        "pattern": "%t/Inbound%g.log",
+        "access_log_level": "INFO",
+        "access_log_pattern": "%t/ui-vertx-inbound-access-%g.log",
+        "patternInfo": "%t is the system TEMP folder, %g is the generation number to distinguish between rotating logs.",
+        "limit": "1024000",
+        "count": "5",
+        "formatter": "java.util.logging.SimpleFormatter"
+    },
+    "circuitBreakerOptions": {
+        "maxFailures": 5,
+        "timeout": 10000,
+        "fallbackOnFailure": false,
+        "resetTimeout": 10000
+    },
+    "eventBusImplementation": {
+      "_class": "de.urbanpulse.eventbus.pulsar.PulsarEventbusFactory",
+      "class": "de.urbanpulse.eventbus.vertx.VertxEventbusFactory",
+      "url": "pulsar://localhost:6650"
+    }
+}

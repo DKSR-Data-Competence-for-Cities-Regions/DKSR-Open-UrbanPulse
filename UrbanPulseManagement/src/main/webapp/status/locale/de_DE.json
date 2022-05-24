@@ -1,0 +1,16 @@
+{
+    "UP_PROBLEM_ENCOUNTERED"    :  "[ui!] UrbanPulse hat ein oder mehrere Probleme festgestellt",
+    "UP_EVERYTHING_FINE"        :  "[ui!] UrbanPulse läuft fehlerfrei",
+    "LAST_STATUS_UPDATE_PREFIX" :  "Letzte Aktualisierung vor",
+    "LAST_STATUS_UPDATE_SUFFIX" :  "Sekunde(n)",
+    "ALL_RIGHTS_RESERVED"       :  "Alle Rechte vorbehalten",
+    "ERROR_NO_MODULE_OF_TYPE"   :  "Kein Modul vom Typ {{type}} ist registriert.",
+    "ERROR_NO_CONFIG_FOR_TYPE"  :  "Keine Konfigurationen für Module vom Typ {{type}} verfügbar.",
+    "ERROR_NOT_EQUALS_SETUPS"   :  "Die Anzahl von Konfigurationen und registrierten Modulen vom Typ {{type}} stimmt nicht überein.",
+    "ERROR_MODULE_UNHEALTHY"    :  "Modul vom Typ {{type}} mit id {{id}} im Zustand Unhealthy.",
+    "ERROR_MODULE_UNSTABLE"     :  "Modul vom Typ {{type}} mit id {{id}} im Zustand Unstable.",
+    "ERROR_MODULE_UNKNOWN"      :  "Modul vom Typ {{type}} mit id {{id}} im Zustand Unknown. Eventuell setup fehlgeschlagen?",
+    "ERROR_UNKNOWN"             :  "Unbekannter Fehler: '{{message}}'",
+    "MISSING"                   :  "fehlt",
+    "LANGUAGE"                  :  "Sprache"
+}

@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="admin" id="create-hash-column-in-up-events">
+        <preConditions onFail="CONTINUE">
+            <tableExists tableName="up_events" />
+            <not><columnExists tableName="up_events" columnName="eventhash" /></not>
+        </preConditions>
+        <addColumn tableName="up_events">
+            <column name="eventhash" type="varchar(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="admin" id="create-hash-column-in-jpa-events">
+        <preConditions onFail="CONTINUE">
+            <tableExists tableName="jpa_events" />
+            <not><columnExists tableName="jpa_events" columnName="eventhash" /></not>
+        </preConditions>
+        <addColumn tableName="jpa_events">
+            <column name="eventhash" type="varchar(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="admin" id="tag_version_6_1_0">
+        <tagDatabase tag="version_6.1.0"/>
+    </changeSet>
+</databaseChangeLog>

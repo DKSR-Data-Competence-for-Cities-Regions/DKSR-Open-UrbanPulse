@@ -1,0 +1,32 @@
+
+{
+    "startDelay": 1000,
+    "cepReceiverVerticleInstances": 6,
+    "logOutEvents": true,
+    "logLatency": false,
+    "cepDestination": "theCEP",
+    "logRateForSIDErrors": 0,
+    "logEventBusContent": true,
+    "enableJsonParsing": true,
+    "enableMapCreation": true,
+    "enableEsper": true,
+    "loggingConfig": {
+        "level": "INFO",
+        "handlers": "java.util.logging.FileHandler, java.util.logging.ConsoleHandler",
+        "pattern": "%t/CEP%g.log",
+        "patternInfo": "%t is the system TEMP folder, %g is the generation number to distinguish between rotating logs.",
+        "limit": "1024000",
+        "count": "5",
+        "formatter": "java.util.logging.SimpleFormatter"
+    },
+    "circuitBreakerOptions": {
+        "maxFailures": 5,
+        "timeout": 10000,
+        "fallbackOnFailure": false,
+        "resetTimeout": 10000
+    },
+  "eventBusImplementation": {
+    "class": "de.urbanpulse.eventbus.vertx.VertxEventbusFactory",
+    "address": "theCEP"
+  }
+}

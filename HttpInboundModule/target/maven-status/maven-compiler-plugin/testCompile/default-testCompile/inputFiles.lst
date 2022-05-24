@@ -1,0 +1,7 @@
+C:\DKSR\opensourceurbanpulse\HttpInboundModule\src\test\java\de\urbanpulse\dist\inbound\http\HttpInboundCommandHandlerTest.java
+C:\DKSR\opensourceurbanpulse\HttpInboundModule\src\test\java\de\urbanpulse\dist\inbound\http\auth\UPAuthHeaderDecoderTest.java
+C:\DKSR\opensourceurbanpulse\HttpInboundModule\src\test\java\de\urbanpulse\dist\inbound\http\auth\MessageAuthenticatorTest.java
+C:\DKSR\opensourceurbanpulse\HttpInboundModule\src\test\java\de\urbanpulse\dist\inbound\http\HttpReceiverVerticleTest.java
+C:\DKSR\opensourceurbanpulse\HttpInboundModule\src\test\java\de\urbanpulse\dist\inbound\http\auth\MessageTimestampValidatorTest.java
+C:\DKSR\opensourceurbanpulse\HttpInboundModule\src\test\java\de\urbanpulse\dist\inbound\http\MainVerticleTest.java
+C:\DKSR\opensourceurbanpulse\HttpInboundModule\src\test\java\de\urbanpulse\dist\inbound\http\VertxQueueTest.java
