@@ -1,4 +1,4 @@
-![This is an image]https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/blob/main/dksr-logo.png
+![This is an image] https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/blob/main/dksr-logo.png
 # DKSR Open-UrbanPulse
 Source Code for Open UrbanPulse Smart City Platform
 
