@@ -1,6 +1,7 @@
 ![DKSR Logo](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/blob/fb7b796f76a9ada4b0766caea675cf5dd41f1e83/DKSR-logo.png)
 
 # DKSR Open-UrbanPulse
+The DKSR Open UrbanPulse platform is the open source version of the UrbanPulse platform from [ui!](https://www.ui.city/en/).
 Source Code for Open UrbanPulse Smart City Platform
 
 
