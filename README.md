@@ -15,3 +15,15 @@ The document here describes the main concepts and functionalities of the open so
 
 
 
+1. [Architectural Components of the Platform](https://www.ui.city/en/)
+ * [Platform Layers Interaction]
+ * [Primary Entities Involved]
+2. [Build and Usage]
+ * [Software Components Required]
+ * [Building the Code]
+ * [Running the build]
+3. [Deploying and using the OUP]
+ * [Web Service Deployment]
+ * [API Description]
+ * [Schema for creating entities]
+
