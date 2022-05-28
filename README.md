@@ -12,3 +12,10 @@ https://www.hbz-nrw.de/produkte/open-access/lizenzen/dfsl/german-free-software-l
 
 # Introduction
 The document here describes the main concepts and functionalities of the open source smart city platform 
+
+1. First ordered list item
+2. Another item
+⋅⋅* Unordered sub-list. 
+1. Actual numbers don't matter, just that it's a number
+⋅⋅1. Ordered sub-list
+4. And another item.
