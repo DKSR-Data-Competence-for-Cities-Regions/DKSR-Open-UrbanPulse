@@ -13,7 +13,5 @@ https://www.hbz-nrw.de/produkte/open-access/lizenzen/dfsl/german-free-software-l
 # Introduction
 The document here describes the main concepts and functionalities of the open source smart city platform 
 
-1. [hhlekhvleifh] (https://www.ui.city/en/)
-2. jkhgekjfhefkl
-3. khefefhiefh
+
 
