@@ -16,14 +16,14 @@ The document here describes the main concepts and functionalities of the open so
 
 
 1. [Architectural Components of the Platform](https://www.ui.city/en/)
- * [Platform Layers Interaction]
- * [Primary Entities Involved]
-2. [Build and Usage]
- * [Software Components Required]
- * [Building the Code]
- * [Running the build]
-3. [Deploying and using the OUP]
- * [Web Service Deployment]
- * [API Description]
- * [Schema for creating entities]
+ * [Platform Layers Interaction](https://www.ui.city/en/)
+ * [Primary Entities Involved](https://www.ui.city/en/)
+2. [Build and Usage](https://www.ui.city/en/)
+ * [Software Components Required](https://www.ui.city/en/)
+ * [Building the Code](https://www.ui.city/en/)
+ * [Running the build](https://www.ui.city/en/)
+3. [Deploying and using the OUP](https://www.ui.city/en/)
+ * [Web Service Deployment](https://www.ui.city/en/)
+ * [API Description](https://www.ui.city/en/)
+ * [Schema for creating entities](https://www.ui.city/en/)
 
