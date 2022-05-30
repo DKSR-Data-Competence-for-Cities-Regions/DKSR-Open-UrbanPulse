@@ -21,7 +21,7 @@ The documents below describe the main concepts and functionalities of the open s
 
 2. Build and Usage
  * [Software Components Required](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Software-Components-Required)
- * [Building the Code](https://www.ui.city/en/)
+ * [Building the Code](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Building-the-Code)
  * [Deploying and Running the Build](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Deploying-and-Running-the-Build)
 3. Deploying and using the OUP
  * [Web Service Deployment](https://www.ui.city/en/)
