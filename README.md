@@ -15,7 +15,7 @@ The documents below describe the main concepts and functionalities of the open s
 
 
 
-1. [Architectural Components of the Platform](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/trialpages)
+1. [Architectural Components of the Platform](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Architectural-Components-of-the-Platform)
  * [Platform Layers Interaction](https://www.ui.city/en/)
  * [Primary Entities Involved](https://www.ui.city/en/)
 2. [Build and Usage](https://www.ui.city/en/)
