@@ -22,7 +22,7 @@ The documents below describe the main concepts and functionalities of the open s
  * [Software Components Required](https://www.ui.city/en/)
  * [Building the Code](https://www.ui.city/en/)
  * [Running the build](https://www.ui.city/en/)
-3. [Deploying and using the OUP](https://www.ui.city/en/)
+3. Deploying and using the OUP
  * [Web Service Deployment](https://www.ui.city/en/)
  * [API Description](https://www.ui.city/en/)
  * [Schema for creating entities](https://www.ui.city/en/)
