@@ -25,7 +25,7 @@ The documents below describe the main concepts and functionalities of the open s
  * [Deploying and Running the Build](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Deploying-and-Running-the-Build)
 3. OUP Usage
  * [Through OUP Management API interface and Status Modules](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Through-OUP-Management-API-and-Status-Modules)
- * [OUP ManagementAPI Description](https://www.ui.city/en/)
+ * [OUP ManagementAPI Description](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/OUP-ManagementAPI-Description)
  * [Schema for creating entities through OUP Management API](https://www.ui.city/en/)
  * [Using Connector to push data to OUP](https://www.ui.city/en/)
 
