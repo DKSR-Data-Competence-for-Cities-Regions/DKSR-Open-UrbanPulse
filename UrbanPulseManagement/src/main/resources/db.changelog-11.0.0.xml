@@ -29,7 +29,6 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_modul__3214EC278AAC35DE"/>
             </column>
             <column name="lastheartbeat" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column defaultValueBoolean="false" name="mailsent" type="BOOLEAN"/>
             <column name="moduletype" type="VARCHAR(255)"/>
             <column name="modulestate" type="VARCHAR(255)"/>
         </createTable>

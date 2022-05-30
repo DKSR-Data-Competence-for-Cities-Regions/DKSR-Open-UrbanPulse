@@ -42,26 +42,6 @@
             "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
         ]
     },
-    "outboundMailerConfig": {
-        "deployMailserver": false,
-        "mailServerConfig": {
-            "hostname": "smtp.strato.de",
-            "port": 465,
-            "username": "monitoring@urban-software-institute.com",
-            "password": "<PASSWORD>",
-            "starttls": "required",
-            "login": "required",
-            "ssl": true
-        },
-        "emailFormatter": {
-            "emailFormatterClass": "de.urbanpulse.dist.outbound.mailer.service.formatter.JsonToHTMLTableFormatter",
-            "emailFormatterConfig": {
-            }
-        },
-        "from": "monitoring@urban-software-institute.com (Monitoring Service)",
-        "minutesBetweenMails": 1,
-        "maxMessagesPerPeriod": 10
-    },
     "clientConfig": {
         "trustAll": true,
         "queueWorkerCount": 1,

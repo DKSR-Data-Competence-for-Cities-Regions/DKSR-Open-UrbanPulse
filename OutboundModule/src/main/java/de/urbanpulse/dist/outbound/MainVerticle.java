@@ -1,7 +1,6 @@
 package de.urbanpulse.dist.outbound;
 
 import de.urbanpulse.dist.outbound.client.HttpVerticle;
-import de.urbanpulse.dist.outbound.mailer.service.OutboundMailerControllerVerticle;
 import de.urbanpulse.dist.outbound.server.ws.WsPublisherVerticle;
 import de.urbanpulse.dist.outbound.server.ws.WsServerVerticle;
 import de.urbanpulse.dist.outbound.server.auth.SecurityManagerInitializer;
@@ -120,7 +119,7 @@ public class MainVerticle extends AbstractMainVerticle {
             return;
         }
 
-        CompositeFuture.all(deployOutboundMailer(), deployWsServerVerticle(), deployUPServiceVerticle()).onComplete(handler -> {
+        CompositeFuture.all(deployWsServerVerticle(), deployUPServiceVerticle()).onComplete(handler -> {
             if (handler.succeeded()) {
                 startPromise.complete();
             } else {
@@ -142,25 +141,7 @@ public class MainVerticle extends AbstractMainVerticle {
         return result.future();
     }
 
-    private Future<Void> deployOutboundMailer() {
-        JsonObject outboundMailerConfig = config().getJsonObject("outboundMailerConfig", new JsonObject());
-        if (outboundMailerConfig.isEmpty()) {
-            LOGGER.info("Skipping Outbound Mailer deployment due to empty config.");
-            return Future.succeededFuture();
-        } else {
-            Promise<Void> result = Promise.promise();
-            LOGGER.info("Deploying Outbound Mailer...");
-            deployVerticle(OutboundMailerControllerVerticle.class.getName(), outboundMailerConfig, 1, (AsyncResult<String> asyncResult) -> {
-                if (asyncResult.succeeded()) {
-                    LOGGER.info("Outbound Mailer deployed.");
-                    result.complete();
-                } else {
-                    result.fail("OutboundMailerController deployment failed!");
-                }
-            });
-            return result.future();
-        }
-    }
+
 
     private Future<Void> deployUPServiceVerticle() {
         JsonObject upServiceVerticleConfig = config().getJsonObject("upServiceConfig", new JsonObject());

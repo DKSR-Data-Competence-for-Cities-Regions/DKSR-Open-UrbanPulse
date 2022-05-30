@@ -1,7 +1,6 @@
 package de.urbanpulse.dist.outbound;
 
 import de.urbanpulse.dist.outbound.client.HttpVerticle;
-import de.urbanpulse.dist.outbound.mailer.service.OutboundMailerControllerVerticle;
 import de.urbanpulse.dist.outbound.server.ws.WsPublisherVerticle;
 import de.urbanpulse.dist.outbound.server.ws.WsServerVerticle;
 import de.urbanpulse.transfer.CommandArgsFactory;
@@ -35,11 +34,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class OutboundCommandHandler extends CommandHandler {
 
+    public static final String SETUP_ADDRESS = OutboundCommandHandler.class.getName();
+
     private static final Logger LOGGER = LoggerFactory.getLogger(OutboundCommandHandler.class);
     private final Map<String, String> listenerToVerticles = new HashMap<>();
     private final Map<String, JsonObject> clientListenerConfigMap = new HashMap<>();
     private final Map<String, JsonObject> serverListenerConfigMap = new HashMap<>();
-    private final Map<String, JsonObject> mailListenerConfigMap = new HashMap<>();
     private final Map<String, List<String>> statementToListeners = new HashMap<>();
     private final CommandArgsFactory commandArgsFactory = new CommandArgsFactory();
     private final ErrorFactory errorFactory = new ErrorFactory();
@@ -65,8 +65,7 @@ public class OutboundCommandHandler extends CommandHandler {
         String id = listenerConfig.getString("id");
 
         //check if update listener is already registered
-        if (clientListenerConfigMap.containsKey(id) || serverListenerConfigMap.containsKey(id) || mailListenerConfigMap
-                .containsKey(id)) {
+        if (clientListenerConfigMap.containsKey(id) || serverListenerConfigMap.containsKey(id)) {
             callback.done(errorFactory.createErrorMessage("already registered listener with id: " + id), null);
         } else {
             try {
@@ -104,29 +103,13 @@ public class OutboundCommandHandler extends CommandHandler {
             case "https":
                 deployHttpVerticles(listenerConfig, createUndoCommand, callback);
                 break;
-            case "mailto":
-                registerMailConsumer(listenerConfig, createUndoCommand, callback);
-                break;
             default:
                 LOGGER.error("Unsupported Scheme: " + scheme);
                 callback.done(errorFactory.createErrorMessage("Unsupported Scheme: " + scheme), null);
         }
     }
 
-    private void registerMailConsumer(JsonObject listenerConfig, boolean createUndoCommand, CommandResult callback) {
-        Promise<Message<Object>> result = Promise.promise();
-        JsonObject setup = new JsonObject();
-        setup.put("register", listenerConfig);
-        mainVerticle.getVertx().eventBus().request(OutboundMailerControllerVerticle.SETUP_ADDRESS, setup, result);
 
-        result.future().onComplete(reply -> {
-            if (reply.succeeded()) {
-                completeRegisterUpdateListener(listenerConfig, createUndoCommand, callback, mailListenerConfigMap);
-            } else {
-                callback.done(errorFactory.createErrorMessage(reply.cause().getMessage()), null);
-            }
-        });
-    }
 
     private void registerForWsServer(JsonObject listenerConfig, boolean createUndoCommand, CommandResult callback) {
         JsonObject setup = new JsonObject();
@@ -202,28 +185,13 @@ public class OutboundCommandHandler extends CommandHandler {
             unregisterForWsServer(serverListenerConfigMap.get(id), createUndoCommand, callback);
         } else if (clientListenerConfigMap.containsKey(id)) {
             undeployHttpVerticles(clientListenerConfigMap.get(id), createUndoCommand, callback);
-        } else if (mailListenerConfigMap.containsKey(id)) {
-            unregisterMailUpdateListener(mailListenerConfigMap.get(id), createUndoCommand, callback);
         } else {
             LOGGER.warn("Update Listener with id [" + id + "]is not registered. Skipping unregistration");
             callback.done(new JsonObject(), null);
         }
     }
 
-    private void unregisterMailUpdateListener(JsonObject unregistrationConfig, boolean createUndoCommand, CommandResult callback) {
-        Promise<Message<Object>> result = Promise.promise();
-        JsonObject setup = new JsonObject();
-        setup.put("unregister", unregistrationConfig);
-        mainVerticle.getVertx().eventBus().request(OutboundMailerControllerVerticle.SETUP_ADDRESS, setup, result);
 
-        result.future().onComplete(reply -> {
-            if (reply.succeeded()) {
-                completeUnregisterUpdateListener(unregistrationConfig, createUndoCommand, callback, mailListenerConfigMap);
-            } else {
-                callback.done(errorFactory.createErrorMessage(reply.cause().getMessage()), null);
-            }
-        });
-    }
 
     private void unregisterForWsServer(JsonObject unregistrationConfig, boolean createUndoCommand, CommandResult callback) {
         LOGGER.info("sending unregister to WS verticles...");
@@ -250,27 +218,17 @@ public class OutboundCommandHandler extends CommandHandler {
     public void reset(CommandResult callback) {
         Promise<Void> httpResetFuture = Promise.promise();
         Promise<Void> wsResetFuture = Promise.promise();
-        Promise<Void> mailResetFuture = Promise.promise();
 
         final ArrayList<String> allVerticles = new ArrayList<>(listenerToVerticles.values());
         resetHttpRelated(allVerticles, httpResetFuture);
         httpResetFuture.future().onComplete(voidVar -> resetWsServerRelated(wsResetFuture));
-        wsResetFuture.future().onComplete(voidVar -> resetOutboundMailer(mailResetFuture));
-        mailResetFuture.future().onComplete(result -> {
+        wsResetFuture.future().onComplete(result -> {
             serverListenerConfigMap.clear();
             clientListenerConfigMap.clear();
-            mailListenerConfigMap.clear();
             listenerToVerticles.clear();
             statementToListeners.clear();
             callback.done(new JsonObject(), null);
         });
-    }
-
-    private void resetOutboundMailer(Handler<AsyncResult<Void>> handler) {
-        JsonObject setup = new JsonObject();
-        setup.put("reset", new JsonObject());
-        mainVerticle.getVertx().eventBus()
-                .request(OutboundMailerControllerVerticle.SETUP_ADDRESS, setup, reply -> handler.handle(Future.succeededFuture(null)));
     }
 
 
