@@ -10,7 +10,7 @@ This Github repository here provides the Source Code for OUP Platform along with
 This code is published by DKSR Gmbh under the German Free Software License. Please refer to the document in the link for usage, change and distribution information:
 https://www.hbz-nrw.de/produkte/open-access/lizenzen/dfsl/german-free-software-license
 
-# Introduction
+# Documentation 
 The document here describes the main concepts and functionalities of the open source smart city platform 
 
 
