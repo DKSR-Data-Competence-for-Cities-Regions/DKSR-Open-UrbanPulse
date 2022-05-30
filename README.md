@@ -11,7 +11,7 @@ This code is published by DKSR Gmbh under the German Free Software License. Plea
 https://www.hbz-nrw.de/produkte/open-access/lizenzen/dfsl/german-free-software-license
 
 # Documentation 
-The document here describes the main concepts and functionalities of the open source smart city platform 
+The documents below describe the main concepts and functionalities of the open source smart city platform 
 
 
 
