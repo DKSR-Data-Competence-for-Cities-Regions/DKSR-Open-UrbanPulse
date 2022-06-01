@@ -16,7 +16,7 @@ The documents below describe the main concepts and functionalities of the open s
 
 
 
-1. Archtecture Description
+1. Architecture Description
  * [Architectural View of the Platform](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Architectural-View-of-the-Platform) 
  * [Technologies and Components](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Technologies-and-Components)
 
@@ -25,8 +25,8 @@ The documents below describe the main concepts and functionalities of the open s
  * [Building the Code](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Building-the-Code)
  * [Deploying and Running the Build](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Deploying-and-Running-the-Build)
 3. OUP Usage
- * [Through OUPManagementAPI interface and Status Modules](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Through-OUP-Management-API-and-Status-Modules)
+ * [Through OUPManagementAPI Web Interface and Status Modules](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Through-OUP-Management-API-and-Status-Modules)
  * [OUPManagementAPI Description](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/OUP-ManagementAPI-Description)
- * [Entities and their Schema for creation through OUPManagementAPI](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Entities-and-their-Schema-for-creation-through-OUPManagementAPI)
+ * [Entities and their Schema for creation through OUPManagementAPI Web Interface](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Entities-and-their-Schema-for-creation-through-OUPManagementAPI)
  * [Using Connector to push data to OUP](https://github.com/DKSR-Data-Competence-for-Cities-Regions/DKSR-Open-UrbanPulse/wiki/Using-Connector-to-push-data-to-OUP)
 
