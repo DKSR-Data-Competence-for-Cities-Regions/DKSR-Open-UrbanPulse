@@ -42,45 +42,7 @@
         <hazelcast-kubernetes.version>1.5.1</hazelcast-kubernetes.version>
         <micrometer.version>1.6.5</micrometer.version>
     </properties>
- <!--
-    <distributionManagement>
-        <repository>
-            <id>usi-visualstudio.com-libs-release</id>
-            <url>https://usi.pkgs.visualstudio.com/_packaging/libs-release/maven/v1</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <snapshotRepository>
-            <id>usi-visualstudio.com-libs-snapshot</id>
-            <url>https://usi.pkgs.visualstudio.com/_packaging/libs-snapshot/maven/v1</url>
-        </snapshotRepository>
-    </distributionManagement>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>usi-visualstudio.com-usi-plugins</id>
-            <url>https://usi.pkgs.visualstudio.com/_packaging/usi-plugins/maven/v1</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
 
-        <pluginRepository>
-            <id>usi-visualstudio.com-libs-release</id>
-            <url>https://usi.pkgs.visualstudio.com/_packaging/libs-release/maven/v1</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>usi-visualstudio.com-libs-snapshot</id>
-            <url>https://usi.pkgs.visualstudio.com/_packaging/libs-snapshot/maven/v1</url>
-        </pluginRepository>
-    </pluginRepositories>
-    -->
     <repositories>
         <repository>
             <id>payara-patched-externals</id>
@@ -336,7 +298,7 @@
     </build>
 
     <modules>
-        <!--<module>BackchannelModule</module>-->
+        <module>BackchannelModule</module>
         <module>EventProcessorModule</module>
         <module>HttpInboundModule</module>
         <module>OutboundModule</module>
@@ -344,9 +306,6 @@
         <module>UPEntitiesLib</module>
         <module>UPSecurityRealm</module>
         <module>UPUtils</module>
-        <!--<module>UPMonitoring</module>-->
         <module>UrbanPulseManagement</module>
-        <!--<module>WellKnownNode</module>-->
-        <!--<module>ServiceFacade</module>-->
     </modules>
 </project>

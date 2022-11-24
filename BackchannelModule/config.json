@@ -1,0 +1,63 @@
+{
+    "receiverConfig": {
+        "host": "localhost",
+        "port": 21311,
+        "receiverCount": 1,
+        "logEventBusContent": true,
+        "keystore": "localhost_keystore.jks",
+        "keystorePassword": "changeit",
+        "elasticConfig": {
+          "elasticHost": "",
+          "elasticPort": 0,
+          "username": "",
+          "password": "",
+          "verifyHost": true,
+          "trustAll": false,
+          "httpScheme": "",
+          "sendAPI" : false
+        },
+        "senderConfig": {
+            "" : "",
+            "" : "",
+            "" : "",
+            "" : "",
+            "" : ""
+        },
+        "operationConfig": {
+            "meanCalculation" : "avg",
+            "totalCalculation" : "sum",
+            "minCalculation" : "min",
+            "maxCalculation" : "max",
+            "countCalculation" : "count",
+            "countAll" : "count"
+        }
+    },
+    "loggingConfig": {
+        "level": "INFO",
+        "handlers": "java.util.logging.FileHandler, java.util.logging.ConsoleHandler, de.urbanpulse.transfer.AccessLogFileHandler",
+        "access_log_level": "INFO",
+        "access_log_pattern": "%t/ui-vertx-backchannel-access-%g.log",
+        "pattern": "%t/Backchannel%g.log",
+        "patternInfo": "%t is the system TEMP folder, %g is the generation number to distinguish between rotating logs.",
+        "limit": "1024000",
+        "count": "5",
+        "formatter": "java.util.logging.SimpleFormatter"
+    },
+    "circuitBreakerOptions": {
+        "maxFailures": 5,
+        "timeout": 10000,
+        "fallbackOnFailure": false,
+        "resetTimeout": 10000
+    },
+    "metricsServiceConfig": {
+        "enabled": false,
+        "logMetrics": false,
+        "metricsInterval": 60000,
+        "metricsHandler": {
+            "de.urbanpulse.monitoring.HTTPMonitoringVerticle": {
+                "host": "0.0.0.0",
+                "port": 8888
+            }
+        }
+    }
+}
