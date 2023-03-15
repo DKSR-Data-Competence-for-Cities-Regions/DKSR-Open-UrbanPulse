@@ -3,6 +3,7 @@ package de.urbanpulse.urbanpulsemanagement.services;
 import de.urbanpulse.urbanpulsecontroller.admin.entities.modules.InboundSetupEntity;
 import de.urbanpulse.urbanpulsecontroller.admin.entities.modules.PersistenceV3SetupEntity;
 import de.urbanpulse.urbanpulsecontroller.admin.entities.modules.UPModuleEntity;
+import de.urbanpulse.urbanpulsecontroller.admin.modules.BackchannelSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.EventProcessorSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.InboundSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.OutboundSetupDAO;
@@ -54,7 +55,8 @@ public class KpiRestServiceTest {
     @Mock
     private EventProcessorSetupDAO eventProcessorSetupDAO;
 
-
+    @Mock
+    private BackchannelSetupDAO backchannelSetupDAO;
 
     @Mock
     private InboundSetupDAO inboundSetupDAO;
@@ -77,7 +79,7 @@ public class KpiRestServiceTest {
 
     @Before
     public void setupTest() {
-        Date now = java.util.Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC));
+        Date now = Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC));
 
         Mockito.when(heartbeatHandler.getTimeout()).thenReturn(heartBeatTimeout);
 
@@ -135,7 +137,33 @@ public class KpiRestServiceTest {
         responseJson.getJsonArray("registeredModules").forEach(m -> assertTrue(moduleList.stream().map(UPModuleEntity::getId).anyMatch(((JsonObject) m).getString("moduleId")::equals)));
     }
 
+    @Test
+    public void testGetKpiOverview_willNotReturnInfoOnBackchannel_ifNoSetupInDatabase() {
+        Response response = kpiRestService.getKpiOverview(null);
+
+        JsonObject responseBody = new JsonObject((String) response.getEntity());
+        JsonArray setups = responseBody.getJsonArray("availableSetups");
+        for (Object o : setups) {
+            JsonObject setup = (JsonObject) o;
+            if (setup.getString("name").equals("Backchannel")) {
+                assertTrue(setup.getInteger("count") == 0);
+            }
+        }
+    }
 
 
+    @Test
+    public void testGetKpiOverview_willReturnInfoOnBackchannel_ifSetupInDatabase() {
+        Response response = kpiRestService.getKpiOverview(null);
+
+        JsonObject responseBody = new JsonObject((String) response.getEntity());
+        JsonArray setups = responseBody.getJsonArray("availableSetups");
+        for (Object o : setups) {
+            JsonObject setup = (JsonObject) o;
+            if (setup.getString("name").equals("Backchannel")) {
+                assertTrue(setup.getInteger("count") == 1);
+            }
+        }
+    }
 
 }

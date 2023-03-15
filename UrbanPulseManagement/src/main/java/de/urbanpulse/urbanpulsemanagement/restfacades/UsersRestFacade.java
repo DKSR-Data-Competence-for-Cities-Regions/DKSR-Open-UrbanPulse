@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 
@@ -21,7 +22,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static de.urbanpulse.urbanpulsecontroller.config.UPDefaultRoles.*;
+import static de.urbanpulse.urbanpulsecontroller.config.UPDefaultRoles.ADMIN;
+import static de.urbanpulse.urbanpulsecontroller.config.UPDefaultRoles.USER;
 import static java.util.Collections.EMPTY_LIST;
 import static java.util.stream.Collectors.toList;
 
@@ -69,7 +71,7 @@ public class UsersRestFacade extends AbstractRestFacade {
             value = "Retrieve the user with the given ID.",
             response = UserTO.class
     )
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, USER}, logical = Logical.OR)
     public Response getUser(@PathParam("id") String id) {
         return service.getUser(id);
     }
@@ -96,7 +98,6 @@ public class UsersRestFacade extends AbstractRestFacade {
     @ApiOperation(
             value = "Reset the token of your own user."
     )
-
     @RequiresRoles(ADMIN)
     public Response resetKey(@PathParam("id") String id) {
         return service.resetKey(id, securityContext);
@@ -135,6 +136,21 @@ public class UsersRestFacade extends AbstractRestFacade {
         return service.updateUser(id, mapUserTOFrom(user), securityContext);
     }
 
+    @PUT
+    @Path("/{id}/password")
+    @Consumes("text/plain")
+    @Produces("application/json" + "; charset=utf-8")
+    @ApiOperation(
+            value = "Change the password of the user with the given ID."
+    )
+    @RequiresAuthentication
+    public Response changePassword(@PathParam("id") String id, @ApiParam(required = true) String password) {
+        if (password == null) {
+            throw new WebApplicationException("Request body must contain a password", Response.Status.BAD_REQUEST);
+        }
+        return service.changePassword(id, password, securityContext);
+    }
+
     @DELETE
     @Path("/{id}")
     @ApiOperation(
@@ -151,7 +167,7 @@ public class UsersRestFacade extends AbstractRestFacade {
     @ApiOperation(
             value = "Assign a permission (if not exists) to a user to access the given sensor data"
     )
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, USER}, logical = Logical.OR)
     public Response addPermission(@PathParam("id") String id, @PathParam("SID") String sid, @ApiParam(required = true) ScopesWithOperations permissions) {
         Subject currentUser = shiroSubjectHelper.getSubject();
         if (currentUser.isPermitted("sensor:" + sid + ":permission:write")) {
@@ -167,7 +183,7 @@ public class UsersRestFacade extends AbstractRestFacade {
     @ApiOperation(
             value = "Get all the permission which linked to the user and contains the SID"
     )
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, USER}, logical = Logical.OR)
     public Response getPermission(@PathParam("id") String id, @PathParam("SID") String sid) {
         Subject currentUser = shiroSubjectHelper.getSubject();
         if (currentUser.isPermitted("sensor:" + sid + ":permission:read")) {
@@ -183,7 +199,7 @@ public class UsersRestFacade extends AbstractRestFacade {
     @ApiOperation(
             value = "Delete the given permission link from the user's permission list"
     )
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, USER}, logical = Logical.OR)
     public Response deletePermission(@PathParam("id") String id, @PathParam("permissionId") String permissionId) {
         Subject currentUser = shiroSubjectHelper.getSubject();
         if (currentUser.isPermitted("sensor:*:permission:delete")) {

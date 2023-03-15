@@ -7,14 +7,16 @@ import de.urbanpulse.urbanpulsecontroller.admin.transfer.PermissionTO;
 import de.urbanpulse.urbanpulsecontroller.admin.transfer.RoleTO;
 import de.urbanpulse.urbanpulsecontroller.admin.transfer.UserTO;
 import de.urbanpulse.urbanpulsecontroller.config.UPDefaultRoles;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.mindrot.jbcrypt.BCrypt;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static javax.ejb.TransactionAttributeType.MANDATORY;
-import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * This code is published by DKSR Gmbh under the German Free Software License.
@@ -54,6 +56,19 @@ public class UserManagementDAO extends AbstractUUIDDAO<UserEntity, UserTO> {
         // In the create case, we explicitly want to return the secret key though, that's why it's set "manually" here
         toTransferObject.setSecretKey(userTO.getSecretKey());
         return toTransferObject;
+    }
+
+    public UserTO changePassword(String id, String password) {
+        UserEntity entity = queryById(id);
+        if (entity == null) {
+            return null;
+        }
+
+        String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+        entity.setPasswordHash(passwordHash);
+        entityManager.merge(entity);
+        entityManager.flush();
+        return toTransferObject(entity);
     }
 
     private List<RoleEntity> resolveRoles(List<RoleTO> roles) {

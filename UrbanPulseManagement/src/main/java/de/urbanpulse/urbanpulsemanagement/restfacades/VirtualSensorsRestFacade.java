@@ -14,6 +14,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import static de.urbanpulse.urbanpulsecontroller.config.UPDefaultRoles.ADMIN;
+import static de.urbanpulse.urbanpulsecontroller.config.UPDefaultRoles.APP_USER;
 import static de.urbanpulse.urbanpulsemanagement.restfacades.VirtualSensorsRestFacade.ROOT_PATH;
 
 import de.urbanpulse.urbanpulsemanagement.util.WrappedWebApplicationException;
@@ -34,17 +35,17 @@ public class VirtualSensorsRestFacade extends AbstractRestFacade {
     @EJB
     private VirtualSensorsRestService service;
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, APP_USER}, logical = Logical.OR)
     @GET
     @Produces("application/json" + "; charset=utf-8")
     @ApiOperation(value = "retrieve all registered virtual sensors by category id and statement name",
             response = VirtualSensorTO.class, responseContainer = "List")
-    public Response getVirtualSensors(@QueryParam("category") String catgeoryId,
+    public Response getVirtualSensors(@QueryParam("category") String catgeoryId, @QueryParam("schema") String schemaName,
                                       @QueryParam("resultStatementName") String resultStatementName) {
-        return service.getVirtualSensors(catgeoryId, resultStatementName);
+        return service.getVirtualSensors(catgeoryId, resultStatementName, schemaName);
     }
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, APP_USER}, logical = Logical.OR)
     @GET
     @Path("/{sid}")
     @Produces("application/json" + "; charset=utf-8")
@@ -53,7 +54,7 @@ public class VirtualSensorsRestFacade extends AbstractRestFacade {
         return service.getVirtualSensor(sid);
     }
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, APP_USER}, logical = Logical.OR)
     @DELETE
     @Path("/{sid}")
     @Produces("application/json" + "; charset=utf-8")
@@ -62,7 +63,7 @@ public class VirtualSensorsRestFacade extends AbstractRestFacade {
         return service.deleteVirtualSensor(sid);
     }
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, APP_USER}, logical = Logical.OR)
     @POST
     @Consumes("application/json")
     @ApiOperation(value = "create a virtual sensor")
@@ -74,7 +75,7 @@ public class VirtualSensorsRestFacade extends AbstractRestFacade {
         }
     }
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, APP_USER}, logical = Logical.OR)
     @PUT
     @Path("/{sid}/targets")
     @Consumes("application/json")

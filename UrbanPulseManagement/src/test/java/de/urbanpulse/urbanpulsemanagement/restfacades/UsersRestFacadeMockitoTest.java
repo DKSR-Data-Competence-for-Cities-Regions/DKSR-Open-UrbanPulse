@@ -4,21 +4,23 @@ import de.urbanpulse.urbanpulsecontroller.admin.transfer.UserTO;
 import de.urbanpulse.urbanpulsemanagement.restfacades.dto.ScopesWithOperations;
 import de.urbanpulse.urbanpulsemanagement.restfacades.dto.UserWithIds;
 import de.urbanpulse.urbanpulsemanagement.services.UsersRestService;
-import java.util.Collections;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
+import java.util.Collections;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 /**
  * This code is published by DKSR Gmbh under the German Free Software License.
@@ -110,6 +112,17 @@ public class UsersRestFacadeMockitoTest extends AbstractRestFacadeTest {
         Response actualResponse = usersRestFacade.resetKey(USER_ID);
 
         verify(service, times(1)).resetKey(eq(USER_ID), eq(securityContext));
+        assertEquals(this.response, actualResponse);
+    }
+
+    @Test
+    public void test_changePassword_willDelegateToService() {
+        final String newPassword = "sup3r-Safe";
+        given(service.changePassword(eq(USER_ID), eq(newPassword), eq(securityContext))).willReturn(response);
+
+        Response actualResponse = usersRestFacade.changePassword(USER_ID, newPassword);
+
+        verify(service, times(1)).changePassword(eq(USER_ID), eq(newPassword), eq(securityContext));
         assertEquals(this.response, actualResponse);
     }
 

@@ -1,5 +1,6 @@
 package de.urbanpulse.urbanpulsemanagement.services;
 
+import de.urbanpulse.dist.jee.upsecurityrealm.oidc.configuration.KeyCloakConfigLookUp;
 import de.urbanpulse.urbanpulsecontroller.admin.RoleManagementDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.UserManagementDAO;
 
@@ -34,7 +35,8 @@ public class LoginRestServiceTest {
     @Mock
     private RoleManagementDAO roleManagementDaoMock;
 
-
+    @Mock
+    private KeyCloakConfigLookUp keyCloakConfigLookUp;
 
     @Mock
     private WebTarget webTarget;

@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static de.urbanpulse.urbanpulsecontroller.config.UPDefaultRoles.ADMIN;
+import static de.urbanpulse.urbanpulsecontroller.config.UPDefaultRoles.CONNECTOR_MANAGER;
 import static de.urbanpulse.urbanpulsemanagement.restfacades.MigratorRestFacade.ROOT_PATH;
 
 /**
@@ -35,7 +36,7 @@ public class MigratorRestFacade extends AbstractRestFacade {
     @EJB
     private SensorManagementDAO sensorDao;
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER}, logical = Logical.OR)
     @POST
     @Consumes("application/json")
     @Path("/sensors/descripton/reference")

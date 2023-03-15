@@ -32,7 +32,7 @@ public class EventTypesRestFacade extends AbstractRestFacade {
     @EJB
     private EventTypesRestService service;
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, APP_USER, CONNECTOR}, logical = Logical.OR)
     @GET
     @Path("/{id}")
     @Produces("application/json" + "; charset=utf-8")
@@ -49,7 +49,7 @@ public class EventTypesRestFacade extends AbstractRestFacade {
      * @param id the id of the event type to be deleted
      * @return 204 NO CONTENT
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER}, logical = Logical.OR)
     @DELETE
     @Path("/{id}")
     @Produces("application/json" + "; charset=utf-8")
@@ -63,7 +63,7 @@ public class EventTypesRestFacade extends AbstractRestFacade {
     /**
      * @return event types wrapped in JSON object
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, APP_USER, CONNECTOR}, logical = Logical.OR)
     @GET
     @Produces("application/json" + "; charset=utf-8")
     @ApiOperation(
@@ -96,7 +96,7 @@ public class EventTypesRestFacade extends AbstractRestFacade {
      * @return 201 created response with location header set appropriately, if successful / 409 conflict response if
      * name not unique / 400 bad request if json invalid / 500 internal server error otherwise
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, CONNECTOR}, logical = Logical.OR)
     @POST
     @Consumes("application/json")
     @ApiOperation(
@@ -117,7 +117,7 @@ public class EventTypesRestFacade extends AbstractRestFacade {
      * @param eventTypeJson JSON string with an optional name, description or event parameters to update
      * @return the updatedEventType Response
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, CONNECTOR}, logical = Logical.OR)
     @PUT
     @Path("/{id}")
     @Consumes("application/json")

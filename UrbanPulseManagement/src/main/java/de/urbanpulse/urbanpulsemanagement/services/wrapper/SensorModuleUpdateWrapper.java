@@ -21,8 +21,8 @@ public class SensorModuleUpdateWrapper {
     @Inject
     private ModuleUpdateManager moduleUpdateManager;
 
-    public void updateConnector(String connectorId, String authKey) throws SensorModuleUpdateWrapperException {
-        JsonObject commands = commandsJsonFactory.createUpdateConnectorCommands(connectorId, authKey);
+    public void updateConnector(String connectorId, String authKey, String backchannelKey, String backchannelEndpoint) throws SensorModuleUpdateWrapperException {
+        JsonObject commands = commandsJsonFactory.createUpdateConnectorCommands(connectorId, authKey, backchannelKey, backchannelEndpoint);
         List<JsonObject> errorList = moduleUpdateManager.runModuleTypeCommands(commands);
         if (!isSuccessful(errorList)) {
             throw new SensorModuleUpdateWrapperException("update connector failed", errorList);
@@ -61,8 +61,8 @@ public class SensorModuleUpdateWrapper {
         }
     }
 
-    public void registerConnector(String connectorId, String authKey) throws SensorModuleUpdateWrapperException {
-        JsonObject commands = commandsJsonFactory.createRegisterConnectorCommands(connectorId, authKey);
+    public void registerConnector(String connectorId, String authKey, String backchannelKey, String backchannelEndpoint) throws SensorModuleUpdateWrapperException {
+        JsonObject commands = commandsJsonFactory.createRegisterConnectorCommands(connectorId, authKey, backchannelKey, backchannelEndpoint);
         List<JsonObject> errorList = moduleUpdateManager.runModuleTypeCommands(commands);
         if (!isSuccessful(errorList)) {
             throw new SensorModuleUpdateWrapperException("register connector failed", errorList);

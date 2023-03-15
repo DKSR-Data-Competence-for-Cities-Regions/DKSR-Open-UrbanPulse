@@ -116,27 +116,27 @@ public class VirtualSensorsDependencyCreator {
         }
     }
 
-    private io.vertx.core.json.JsonArray queryEventTypes(List<String> eventTypeIds) {
-        List<io.vertx.core.json.JsonObject> result = eventTypeIds.stream()
+    private JsonArray queryEventTypes(List<String> eventTypeIds) {
+        List<JsonObject> result = eventTypeIds.stream()
                 .map(this::queryEventType)
                 .collect(Collectors.toList());
-        return new io.vertx.core.json.JsonArray(result);
+        return new JsonArray(result);
     }
 
-    private io.vertx.core.json.JsonObject queryEventType(String eventTypeId) {
+    private JsonObject queryEventType(String eventTypeId) {
         EventTypeTO eventType = eventTypeManagementDAO.getById(eventTypeId);
-        return new io.vertx.core.json.JsonObject(eventType.toJson().toString());
+        return new JsonObject(eventType.toJson().toString());
     }
 
-    private io.vertx.core.json.JsonArray queryStatements(List<String> statementIds) {
-        io.vertx.core.json.JsonArray result = new io.vertx.core.json.JsonArray();
+    private JsonArray queryStatements(List<String> statementIds) {
+        JsonArray result = new JsonArray();
         statementIds.stream().map(this::queryStatement).forEach(result::add);
         return result;
     }
 
-    private io.vertx.core.json.JsonObject queryStatement(String statementId) {
+    private JsonObject queryStatement(String statementId) {
         StatementTO statement = statementManagementDAO.getById(statementId);
-        io.vertx.core.json.JsonObject json = new io.vertx.core.json.JsonObject();
+        JsonObject json = new JsonObject();
         json.put("name", statement.getName())
                 .put("query", statement.getQuery())
                 .put("id", statement.getId());

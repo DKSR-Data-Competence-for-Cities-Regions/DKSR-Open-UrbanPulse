@@ -1,6 +1,7 @@
 package de.urbanpulse.urbanpulsemanagement.services;
 
 import de.urbanpulse.dist.jee.upsecurityrealm.hmac.Hasher;
+import de.urbanpulse.dist.jee.upsecurityrealm.oidc.configuration.KeyCloakConfigLookUp;
 import de.urbanpulse.urbanpulsecontroller.admin.RoleManagementDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.UserManagementDAO;
 
@@ -44,12 +45,15 @@ public class LoginRestService extends AbstractRestService {
     @Inject
     private RoleManagementDAO roleManagementDAO;
 
+    private KeyCloakConfigLookUp keyCloakConfigLookUp;
 
     private WebTarget webTarget;
 
     @PostConstruct
     public void init() {
+        keyCloakConfigLookUp = new KeyCloakConfigLookUp();
         Client client = ClientBuilder.newClient();
+        webTarget = client.target(keyCloakConfigLookUp.getKeyCloakBaseUri() + "/realms/" + keyCloakConfigLookUp.getKeyCloakRealm() + "/protocol/openid-connect/token");
     }
 
     /**
@@ -74,13 +78,13 @@ public class LoginRestService extends AbstractRestService {
 
         Form keycloakTokenGatheringForm = createKeycloakTokenGatheringForm(username, password);
         Entity<Form> entity = Entity.entity(keycloakTokenGatheringForm, MediaType.APPLICATION_FORM_URLENCODED);
-        //String authorizationHeaderValue = createAuthHeader();
+        String authorizationHeaderValue = createAuthHeader();
 
         // Getting the Access token for the user from keycloak based on the keycloak configuration
         Response response = webTarget
                 .request(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
                 .accept(MediaType.APPLICATION_JSON)
-                //.header("Authorization", authorizationHeaderValue)
+                .header("Authorization", authorizationHeaderValue)
                 .post(entity);
 
         //Response should contain an access token if the user is registered to Keycloak
@@ -116,9 +120,9 @@ public class LoginRestService extends AbstractRestService {
         return responseJson;
     }
 
-  /*  private String createAuthHeader() {
+    private String createAuthHeader() {
         return BASIC_AUTH_PREFIX + java.util.Base64.getEncoder().encodeToString((keyCloakConfigLookUp.getKeyCloakClientId() + ":" + keyCloakConfigLookUp.getKeyCloakSecret()).getBytes());
-    }*/
+    }
 
     private Form createKeycloakTokenGatheringForm(String username, String password) {
         return new Form()

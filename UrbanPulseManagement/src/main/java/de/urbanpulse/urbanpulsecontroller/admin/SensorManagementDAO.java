@@ -72,11 +72,23 @@ public class SensorManagementDAO extends AbstractUUIDDAO<SensorEntity, SensorTO>
 
         return baseQuery.getResultList();
     }
+    
+    public List<SensorTO> getSensorsByEventType(String eventTypeId) {
+        return toTransferObjectList(entityManager.createQuery("select s from SensorEntity s left join fetch s.eventType e left join fetch s.categories c where e.id = :id", SensorEntity.class)
+                .setParameter("id", eventTypeId)
+                .getResultList());
+    }
+    
+    public List<SensorTO> getSensorsOfConnector(String connectorId) {
+        return toTransferObjectList(entityManager.createQuery("select s from SensorEntity s left join fetch s.eventType left join fetch s.categories left join fetch s.connector c where c.id = :id", SensorEntity.class)
+                .setParameter("id", connectorId)
+                .getResultList());
+    }
 
     public List<SensorTO> getAllWithDepsFetched() {
         return toTransferObjectList(queryAllWithDepsFetched());
     }
-
+    
     public List<SensorTO> getAllWithDepsFetched(List<String> filterBySensors) {
         return toTransferObjectList(queryAllWithDepsFetched(filterBySensors));
     }
@@ -84,7 +96,7 @@ public class SensorManagementDAO extends AbstractUUIDDAO<SensorEntity, SensorTO>
     public List<SensorTO> getAllFromCategoryWithDeps(CategoryEntity category) {
         return getAllFromCategoryWithDeps(category, null);
     }
-
+    
     public List<SensorTO> getAllFromCategoryWithDeps(CategoryEntity category, List<String> filterBySensors) {
         String baseQueryStr = "select s from SensorEntity s left join fetch s.categories left join fetch "
                     + "s.eventType where :category member of s.categories";
@@ -95,7 +107,7 @@ public class SensorManagementDAO extends AbstractUUIDDAO<SensorEntity, SensorTO>
         } else {
             baseQuery = entityManager.createQuery(baseQueryStr);
         }
-
+        
         baseQuery.setParameter("category", category);
         List<SensorEntity> entities = baseQuery.getResultList();
         return toTransferObjectList(entities);
@@ -116,7 +128,7 @@ public class SensorManagementDAO extends AbstractUUIDDAO<SensorEntity, SensorTO>
         SensorEntity sensor = new SensorEntity();
 
         sensor.setDescription(description);
-        sensor.setLocation(locationJson); sensor.setLocation(locationJson);
+        sensor.setLocation(locationJson);
 
         ConnectorEntity connector = queryConnector(connectorId);
         connector.addSensor(sensor);
@@ -150,7 +162,7 @@ public class SensorManagementDAO extends AbstractUUIDDAO<SensorEntity, SensorTO>
      * @param eventTypeId the id of the event
      * @param location string representation for the location
      * @return sensor the updated sensor
-     * @throws javax.naming.OperationNotSupportedException sensor to update not found
+     * @throws OperationNotSupportedException sensor to update not found
      * @throws ReferencedEntityMissingException references category or event type does not exist
      */
     public SensorTO updateSensor(String id, String eventTypeId, String connectorId, List<String> categoryIds,
@@ -189,7 +201,7 @@ public class SensorManagementDAO extends AbstractUUIDDAO<SensorEntity, SensorTO>
      * @return sensor
      * @param id if of the sensor to be updated
      * @param eventTypeId the id of the eventType
-     * @throws javax.naming.OperationNotSupportedException sensor to update not found
+     * @throws OperationNotSupportedException sensor to update not found
      * @throws ReferencedEntityMissingException references category or event type does not exist
      */
     public SensorTO updateSensorEventTypeIds(String id, String eventTypeId)

@@ -6,6 +6,7 @@ import de.urbanpulse.dist.jee.entities.UserEntity;
 import de.urbanpulse.urbanpulsecontroller.admin.CategoryManagementDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.OutboundInterfacesManagementDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.UserManagementDAO;
+import de.urbanpulse.urbanpulsecontroller.admin.modules.BackchannelSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.InboundSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.PersistenceV3SetupDAO;
 
@@ -63,7 +64,8 @@ public class DatabaseInitializer {
     @Inject
     private PersistenceV3SetupDAO persistenceV3Dao;
 
-
+    @Inject
+    private BackchannelSetupDAO backchannelSetupDao;
 
     @Inject
     private OutboundInterfacesManagementDAO outboundInterfacesDao;
@@ -78,13 +80,19 @@ public class DatabaseInitializer {
         try {
             tx.begin();
             checkRole(ADMIN);
+            checkRole(APP_USER);
+            checkRole(CONNECTOR_MANAGER);
+            checkRole(USER);
+            checkRole(WEBSOCKET_READER);
+            checkRole(HISTORIC_DATA_READER);
 
             createPermissionIfNotExists(HISTORIC_DATA_OPERATOR_FOR_ALL_SENSORS);
             createPermissionIfNotExists(HISTORIC_DATA_READER_FOR_ALL_SENSORS);
             createPermissionIfNotExists(PERMISSION_OPERATOR_FOR_ALL_SENSORS);
             createPermissionIfNotExists(LIVE_DATA_READER_FOR_ALL_SENSORS);
 
-
+            initHistoricDataReaderRolePermissions();
+            initWebsocketReaderRolePermissions();
             initAdminRolePermissions();
 
 
@@ -106,7 +114,15 @@ public class DatabaseInitializer {
                 LOG.info("Persistence V3 setup table is not empty, not seeding the table.");
             }
 
-
+            if (!backchannelSetupDao.hasConfig()) {
+                String path = System.getProperty("com.sun.aas.instanceRoot") + "/config/sql/backchannel.sql";
+                LOG.log(Level.INFO, "Connector backchannel setup table is empty, try seeding from generated chef generated sql file ({0})",
+                        path);
+                executeSql(path);
+                LOG.fine("Done seeding connector backchannel table");
+            } else {
+                LOG.info("Connector backchannel setup table is not empty, not seeding the table.");
+            }
 
             if (!inboundDao.hasConfig()) {
                 String path = System.getProperty("com.sun.aas.instanceRoot") + "/config/sql/inbound.sql";
@@ -139,7 +155,19 @@ public class DatabaseInitializer {
         addPermissionsToRole(permissionsToAdminRole, ADMIN);
     }
 
+    private void initWebsocketReaderRolePermissions() {
+        List<String> permissionsToLiveDataReaderRole = new ArrayList<>();
+        permissionsToLiveDataReaderRole.add(LIVE_DATA_READER_FOR_ALL_SENSORS);
 
+        addPermissionsToRole(permissionsToLiveDataReaderRole, WEBSOCKET_READER);
+    }
+
+    private void initHistoricDataReaderRolePermissions() {
+        List<String> permissionsToHistoricDataReaderRole = new ArrayList<>();
+        permissionsToHistoricDataReaderRole.add(HISTORIC_DATA_READER_FOR_ALL_SENSORS);
+
+        addPermissionsToRole(permissionsToHistoricDataReaderRole, HISTORIC_DATA_READER);
+    }
 
     void executeSql(String path) {
         try {
@@ -167,11 +195,11 @@ public class DatabaseInitializer {
                 " !!! creating INSECURE default admin user, REPLACE it with one that uses SECURE credentials ASAP !!! ");
         UserEntity user = new UserEntity();
         user.setName("admin");
-        user.setKey("key");
+        user.setKey("adminKey");
         List<RoleEntity> roles = entityManager.createNamedQuery("getRoleByName", RoleEntity.class)
                 .setParameter("roleName", UPDefaultRoles.ADMIN).getResultList();
 
-        String passwordHash = BCrypt.hashpw("password", BCrypt.gensalt());
+        String passwordHash = BCrypt.hashpw("adminPw", BCrypt.gensalt());
         user.setPasswordHash(passwordHash);
         entityManager.persist(user);
         if (!roles.isEmpty()) {

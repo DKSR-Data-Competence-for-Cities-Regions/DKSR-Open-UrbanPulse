@@ -3,6 +3,7 @@ package de.urbanpulse.urbanpulsecontroller.config;
 import de.urbanpulse.dist.jee.entities.PermissionEntity;
 import de.urbanpulse.dist.jee.entities.RoleEntity;
 import de.urbanpulse.urbanpulsecontroller.admin.UserManagementDAO;
+import de.urbanpulse.urbanpulsecontroller.admin.modules.BackchannelSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.InboundSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.PersistenceV3SetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.transfer.UserTO;
@@ -41,7 +42,8 @@ public class DatabaseInitializerTest {
     @Mock
     private PersistenceV3SetupDAO mockPersistenceV3SetupDAO;
 
-
+    @Mock
+    private BackchannelSetupDAO mockBackchannelSetupDAO;
 
     @Mock
     private InboundSetupDAO mockInboundSetupDAO;
@@ -74,7 +76,7 @@ public class DatabaseInitializerTest {
         when(mockUserManagementDAO.getAdmins()).thenReturn(Arrays.asList(new UserTO()));
         when(mockInboundSetupDAO.hasConfig()).thenReturn(true);
         when(mockPersistenceV3SetupDAO.hasConfig()).thenReturn(true);
-
+        when(mockBackchannelSetupDAO.hasConfig()).thenReturn(true);
         when(mockEntityManager.createNamedQuery("getRoleByName", RoleEntity.class)).thenReturn(mockTypedQuery);
         when(mockEntityManager.createNamedQuery("getPermissionByName", PermissionEntity.class)).thenReturn(mockPermissionTypedQuery);
         when(mockTypedQuery.setParameter(anyString(), any())).thenReturn(mockTypedQuery);
@@ -98,7 +100,7 @@ public class DatabaseInitializerTest {
         when(mockUserManagementDAO.getAdmins()).thenReturn(new ArrayList<>());
         when(mockInboundSetupDAO.hasConfig()).thenReturn(false);
         when(mockPersistenceV3SetupDAO.hasConfig()).thenReturn(false);
-
+        when(mockBackchannelSetupDAO.hasConfig()).thenReturn(false);
         when(mockEntityManager.createNamedQuery("getRoleByName", RoleEntity.class)).thenReturn(mockTypedQuery);
         when(mockEntityManager.createNamedQuery("getPermissionByName", PermissionEntity.class)).thenReturn(mockPermissionTypedQuery);
         when(mockTypedQuery.setParameter(anyString(), any())).thenReturn(mockTypedQuery);
@@ -111,7 +113,7 @@ public class DatabaseInitializerTest {
         verify(dut).createInsecureDefaultAdmin();
         verify(dut).executeSql(endsWith("persistence.sql"));
         verify(dut).executeSql(endsWith("inbound.sql"));
-
+        verify(dut).executeSql(endsWith("backchannel.sql"));
     }
 
     @Test
@@ -119,7 +121,7 @@ public class DatabaseInitializerTest {
         when(mockUserManagementDAO.getAdmins()).thenReturn(new ArrayList<>());
         when(mockInboundSetupDAO.hasConfig()).thenReturn(false);
         when(mockPersistenceV3SetupDAO.hasConfig()).thenReturn(false);
-
+        when(mockBackchannelSetupDAO.hasConfig()).thenReturn(false);
         when(mockEntityManager.createNamedQuery("getRoleByName", RoleEntity.class)).thenReturn(mockTypedQuery);
         when(mockEntityManager.createNamedQuery("getPermissionByName", PermissionEntity.class)).thenReturn(mockPermissionTypedQuery);
         when(mockTypedQuery.setParameter(anyString(), any())).thenReturn(mockTypedQuery);
@@ -137,7 +139,7 @@ public class DatabaseInitializerTest {
         when(mockUserManagementDAO.getAdmins()).thenReturn(new ArrayList<>());
         when(mockInboundSetupDAO.hasConfig()).thenReturn(false);
         when(mockPersistenceV3SetupDAO.hasConfig()).thenReturn(false);
-
+        when(mockBackchannelSetupDAO.hasConfig()).thenReturn(false);
         when(mockEntityManager.createNamedQuery("getRoleByName", RoleEntity.class)).thenReturn(mockTypedQuery);
         when(mockEntityManager.createNamedQuery("getPermissionByName", PermissionEntity.class)).thenReturn(mockPermissionTypedQuery);
         when(mockTypedQuery.setParameter(anyString(), any())).thenReturn(mockTypedQuery);
@@ -156,7 +158,7 @@ public class DatabaseInitializerTest {
         when(mockUserManagementDAO.getAdmins()).thenReturn(new ArrayList<>());
         when(mockInboundSetupDAO.hasConfig()).thenReturn(false);
         when(mockPersistenceV3SetupDAO.hasConfig()).thenReturn(false);
-
+        when(mockBackchannelSetupDAO.hasConfig()).thenReturn(false);
 
         when(mockEntityManager.createNamedQuery("getRoleByName", RoleEntity.class)).thenReturn(mockTypedQuery);
         when(mockTypedQuery.setParameter(anyString(), any())).thenReturn(mockTypedQuery);

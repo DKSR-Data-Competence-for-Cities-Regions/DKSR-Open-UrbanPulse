@@ -6,6 +6,7 @@ import de.urbanpulse.urbanpulsemanagement.services.CategoryRestService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 
 import javax.ejb.EJB;
@@ -14,6 +15,7 @@ import javax.ws.rs.core.Response;
 
 import static de.urbanpulse.urbanpulsecontroller.config.UPDefaultRoles.*;
 import static de.urbanpulse.urbanpulsemanagement.restfacades.CategoryRestFacade.ROOT_PATH;
+
 
 /**
  * REST Web Service for registering categories
@@ -43,7 +45,7 @@ public class CategoryRestFacade extends AbstractRestFacade {
      *        combination with the "onlyRoots" parameter set to true!
      * @return categories wrapped in JSON object
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, APP_USER, CONNECTOR}, logical = Logical.OR)
     @GET
     @Produces("application/json" + "; charset=utf-8")
     @ApiOperation(value = "retrieve registered categories with optional filter by name or sensor ID", response = CategoryTO.class,
@@ -59,7 +61,7 @@ public class CategoryRestFacade extends AbstractRestFacade {
      * @param id the id of the category to delete
      * @return status
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER}, logical = Logical.OR)
     @DELETE
     @Path("/{id}")
     @ApiOperation(value = "deletes a category and updates dependant relationships")
@@ -73,7 +75,7 @@ public class CategoryRestFacade extends AbstractRestFacade {
      * @param id the id of the category to get
      * @return the category with the given id or empty if the category does not exist
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, APP_USER, CONNECTOR}, logical = Logical.OR)
     @GET
     @Path("/{id}")
     @Produces("application/json" + "; charset=utf-8")
@@ -88,7 +90,7 @@ public class CategoryRestFacade extends AbstractRestFacade {
      * @param categoryJson serialized category transfer object with name and description fields
      * @return the id of the newly created category
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, CONNECTOR}, logical = Logical.OR)
     @POST
     @Consumes("application/json" + "; charset=utf-8")
     @ApiOperation(value = "register a new category")
@@ -104,7 +106,7 @@ public class CategoryRestFacade extends AbstractRestFacade {
      *        update
      * @return status of the update request
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, CONNECTOR}, logical = Logical.OR)
     @PUT
     @Path("/{id}")
     @Consumes("application/json" + "; charset=utf-8")
@@ -120,7 +122,7 @@ public class CategoryRestFacade extends AbstractRestFacade {
      * @param resolveChildren resolve the retrieved categories to deliver also all it's children.
      * @return all children or en empty array if there are none
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, APP_USER, CONNECTOR}, logical = Logical.OR)
     @GET
     @Path("/{id}/children")
     @Produces("application/json" + "; charset=utf-8")
@@ -137,7 +139,7 @@ public class CategoryRestFacade extends AbstractRestFacade {
      *        only giving back their child Id's.
      * @return all root categories
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, APP_USER, CONNECTOR}, logical = Logical.OR)
     @GET
     @Path("/root")
     @Produces("application/json" + "; charset=utf-8")
@@ -152,7 +154,7 @@ public class CategoryRestFacade extends AbstractRestFacade {
      * @param id the id of the category to get the parent for
      * @return the parent category or empty if none exist
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, APP_USER, CONNECTOR}, logical = Logical.OR)
     @GET
     @Path("/{id}/parent")
     @Produces("application/json" + "; charset=utf-8")
@@ -167,7 +169,7 @@ public class CategoryRestFacade extends AbstractRestFacade {
      * @param id the id of the category to get the sensors for
      * @return the sensors of a category
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, APP_USER, CONNECTOR}, logical = Logical.OR)
     @GET
     @Path("/{id}/sensors")
     @Produces("application/json" + "; charset=utf-8")

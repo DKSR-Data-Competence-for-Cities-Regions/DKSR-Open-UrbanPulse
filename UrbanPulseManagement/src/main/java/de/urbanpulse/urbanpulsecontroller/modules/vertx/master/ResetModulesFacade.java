@@ -1,6 +1,7 @@
 package de.urbanpulse.urbanpulsecontroller.modules.vertx.master;
 
 import de.urbanpulse.urbanpulsecontroller.admin.entities.modules.UPModuleEntity;
+import de.urbanpulse.urbanpulsecontroller.admin.modules.BackchannelSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.InboundSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.PersistenceV3SetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.TransactionDAO;
@@ -34,7 +35,8 @@ public class ResetModulesFacade {
     private PersistenceV3SetupDAO persistenceV3SetupDAO;
 
 
-
+    @EJB
+    private BackchannelSetupDAO backchannelSetupDAO;
 
     public boolean resetModule(String moduleId) {
 
@@ -50,6 +52,9 @@ public class ResetModulesFacade {
 
         UPModuleType moduleType = UPModuleType.valueOf(module.getModuleType());
         switch (moduleType) {
+            case Backchannel:
+                backchannelSetupDAO.unassign(moduleId);
+                break;
             case InboundInterface:
                 inboundSetupDAO.unassign(moduleId);
                 break;
@@ -61,7 +66,7 @@ public class ResetModulesFacade {
             case WellKnownNode:
                 //Nothing to do here!
                 break;
-
+                
         }
 
         transactionDAO.deleteById(moduleId);

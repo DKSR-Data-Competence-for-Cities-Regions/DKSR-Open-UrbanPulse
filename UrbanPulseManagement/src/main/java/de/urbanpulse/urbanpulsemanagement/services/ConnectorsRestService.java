@@ -130,7 +130,10 @@ public class ConnectorsRestService extends AbstractRestService {
         }
 
         JsonObject description = jsonObject.getJsonObject("description");
-
+        JsonString backchannelEndpointJson = null;
+        if (jsonObject.containsKey("backchannelEndpoint") && !jsonObject.isNull("backchannelEndpoint")) {
+            backchannelEndpointJson = jsonObject.getJsonString("backchannelEndpoint");
+        }
 
         Optional<Response> validationResponse = validateNoDuplicateConnectorName(null, jsonObject);
         if (validationResponse.isPresent()) {
@@ -139,11 +142,16 @@ public class ConnectorsRestService extends AbstractRestService {
 
         ConnectorTO createdConnector;
 
+        if (backchannelEndpointJson == null) {
+            createdConnector = connectorDao.createConnector(description.toString());
+        } else {
             try {
-                createdConnector = connectorDao.createConnector(description.toString());
-            } catch (NullPointerException ex) {
-                return ErrorResponseFactory.badRequest("Description malformed");
+                URI backchannelEndpoint = new URI(backchannelEndpointJson.getString());
+                createdConnector = connectorDao.createConnector(description.toString(), backchannelEndpoint);
+            } catch (NullPointerException | URISyntaxException ex) {
+                return ErrorResponseFactory.badRequest("Backchannel URI malformed");
             }
+        }
 
         if (null == createdConnector) {
             return ErrorResponseFactory.internalServerError("failed to create connector");
@@ -152,7 +160,8 @@ public class ConnectorsRestService extends AbstractRestService {
         URI connectorUri = getItemUri(context, facade, createdConnector.getId());
 
         try {
-            sensorModuleUpdateWrapper.registerConnector(createdConnector.getId(), createdConnector.getKey());
+            sensorModuleUpdateWrapper.registerConnector(createdConnector.getId(), createdConnector.getKey(),
+                    createdConnector.getBackchannelKey(), createdConnector.getBackchannelEndpoint());
         } catch (SensorModuleUpdateWrapperException ex) {
             Logger.getLogger(ConnectorsRestService.class.getName()).log(Level.SEVERE, null, ex);
             return ErrorResponseFactory.fromStatus(Response.Status.ACCEPTED, ex.getMessage());
@@ -177,6 +186,10 @@ public class ConnectorsRestService extends AbstractRestService {
         }
 
         JsonObject description = jsonObject.getJsonObject("description");
+        JsonString backchannelEndpointJson = null;
+        if (jsonObject.containsKey("backchannelEndpoint") && !jsonObject.isNull("backchannelEndpoint")) {
+            backchannelEndpointJson = jsonObject.getJsonString("backchannelEndpoint");
+        }
 
         Optional<Response> validationResponse = validateNoDuplicateConnectorName(id, jsonObject);
         if (validationResponse.isPresent()) {
@@ -185,18 +198,25 @@ public class ConnectorsRestService extends AbstractRestService {
 
         try {
             ConnectorTO updatedConnector;
+
+            if (backchannelEndpointJson == null) {
+                updatedConnector = connectorDao.updateConnector(id, description.toString());
+            } else {
                 try {
-                    updatedConnector = connectorDao.updateConnector(id, description.toString());
-                } catch (NullPointerException ex) {
-                    return ErrorResponseFactory.badRequest("Description malformed");
+                    URI backchannelEndpoint = new URI(backchannelEndpointJson.getString());
+                    updatedConnector = connectorDao.updateConnector(id, description.toString(), backchannelEndpoint);
+                } catch (NullPointerException | URISyntaxException ex) {
+                    return ErrorResponseFactory.badRequest("Backchannel URI malformed");
                 }
+            }
 
             if (null == updatedConnector) {
                 return ErrorResponseFactory.internalServerError("failed to update connector with id[" + id + "]");
             }
 
             try {
-                sensorModuleUpdateWrapper.updateConnector(updatedConnector.getId(), updatedConnector.getKey());
+                sensorModuleUpdateWrapper.updateConnector(updatedConnector.getId(), updatedConnector.getKey(),
+                        updatedConnector.getBackchannelKey(), updatedConnector.getBackchannelEndpoint());
             } catch (SensorModuleUpdateWrapperException ex) {
                 Logger.getLogger(ConnectorsRestService.class.getName()).log(Level.SEVERE, null, ex);
                 return ErrorResponseFactory.fromStatus(Response.Status.ACCEPTED, ex.getMessage());
@@ -219,7 +239,7 @@ public class ConnectorsRestService extends AbstractRestService {
         if (connector == null) {
             return ErrorResponseFactory.notFound("connector with id [" + connectorId + "] does not exist");
         }
-        List<SensorTO> sensors = transferObjectFactory.createList(connector.getSensors(), SensorEntity.class, SensorTO.class);
+        List<SensorTO> sensors = sensorDao.getSensorsOfConnector(connectorId);
         SensorsWrapperTO wrapper = new SensorsWrapperTO(sensors);
 
         return Response.ok(wrapper.toJson().encodePrettily()).build();

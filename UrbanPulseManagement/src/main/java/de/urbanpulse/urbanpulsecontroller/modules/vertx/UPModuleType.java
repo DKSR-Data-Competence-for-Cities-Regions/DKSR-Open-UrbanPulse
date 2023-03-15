@@ -32,6 +32,9 @@ public enum UPModuleType {
     /**
      * new persistence module
      */
-    PersistenceV3
-
+    PersistenceV3,
+    /**
+     * Backchannel module
+     */
+    Backchannel
 }

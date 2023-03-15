@@ -14,37 +14,31 @@ import de.urbanpulse.urbanpulsemanagement.restfacades.dto.ScopesWithOperations;
 import de.urbanpulse.urbanpulsemanagement.services.helper.ShiroSubjectHelper;
 import de.urbanpulse.urbanpulsemanagement.services.wrapper.PersistenceV3Wrapper;
 import de.urbanpulse.urbanpulsemanagement.util.PasswordPolicy;
-import java.net.URI;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.subject.support.SubjectThreadState;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import java.net.URI;
+import java.security.Principal;
+import java.util.*;
 
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.subject.support.SubjectThreadState;
-
-import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 /**
  * This code is published by DKSR Gmbh under the German Free Software License.
@@ -63,6 +57,8 @@ public class UsersRestServiceTest {
     private static final String OTHER_USER_NAME = "Remy";
 
     private static final String USER_PASSWD = "superSecret";
+    private static final RoleTO ROLE_APP_USER = new RoleTO(UUID.randomUUID().toString(), UPDefaultRoles.APP_USER);
+    private static final RoleTO ROLE_CONNECTOR_MANAGER = new RoleTO(UUID.randomUUID().toString(), UPDefaultRoles.CONNECTOR_MANAGER);
 
     private static final PermissionTO PERMISSION_NONADMIN = new PermissionTO("Nose picking");
     private static final PermissionTO PERMISSION_ADMIN = new PermissionTO("Delete everything");
@@ -114,10 +110,8 @@ public class UsersRestServiceTest {
 
     @Before
     public void setUp() {
-
-
-        given(mockSecurityContext.getUserPrincipal()).willReturn(mockUserPrincipal);
-
+        given(roleDao.getById(ROLE_APP_USER.getId())).willReturn(ROLE_APP_USER);
+        given(roleDao.getById(ROLE_CONNECTOR_MANAGER.getId())).willReturn(ROLE_CONNECTOR_MANAGER);
 
         given(permissionDao.getById(PERMISSION_ADMIN.getId())).willReturn(PERMISSION_ADMIN);
         given(permissionDao.getById(PERMISSION_NONADMIN.getId())).willReturn(PERMISSION_NONADMIN);
@@ -180,6 +174,7 @@ public class UsersRestServiceTest {
         UserTO user = new UserTO();
         user.setName("Fritz");
         user.setPassword("superSecret");
+        user.setRoles(Arrays.asList(ROLE_APP_USER, ROLE_CONNECTOR_MANAGER));
         user.setPermissions(Arrays.asList(PERMISSION_NONADMIN));
 
         Response response = service.createUser(user, contextMock, usersRestFacadeMock);
@@ -222,6 +217,7 @@ public class UsersRestServiceTest {
         UserTO user = new UserTO();
         user.setName("Fritz");
         user.setPassword("superSecret");
+        user.setRoles(Arrays.asList(ROLE_APP_USER, ROLE_CONNECTOR_MANAGER));
         user.setPermissions(Collections.EMPTY_LIST);
 
         Response response = service.createUser(user, contextMock, usersRestFacadeMock);
@@ -290,13 +286,67 @@ public class UsersRestServiceTest {
     }
 
     @Test
-    public void updateUser_allowsNonAdminToChangeOwnPassword() throws Exception {
-        given(mockUserPrincipal.getName()).willReturn(USER_NAME);
+    public void changePassword_allowsNonAdmin() {
         given(mockSecurityContext.isUserInRole(UPDefaultRoles.ADMIN)).willReturn(false);
         given(mockPasswordPolicy.isAcceptable(USER_PASSWD)).willReturn(true);
 
+        given(userDaoMock.changePassword(USER_ID, USER_PASSWD)).willReturn(userToMock);
+
+        Response response = service.changePassword(USER_ID, USER_PASSWD, mockSecurityContext);
+
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    public void changePassword_doesNotAllowNonAdminChangeOtherPassword() {
+        given(mockSecurityContext.isUserInRole(UPDefaultRoles.ADMIN)).willReturn(false);
+
+        Response response = service.changePassword(OTHER_USER_ID, USER_PASSWD, mockSecurityContext);
+
+        verify(userDaoMock, never()).changePassword(OTHER_USER_ID, USER_PASSWD);
+        assertEquals(Response.Status.FORBIDDEN.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    public void changePassword_allowsAdminToChangeAnyPassword() throws Exception {
+        given(mockSecurityContext.isUserInRole(UPDefaultRoles.ADMIN)).willReturn(true);
+        given(mockPasswordPolicy.isAcceptable(USER_PASSWD)).willReturn(true);
+
+        given(userDaoMock.changePassword(USER_ID, USER_PASSWD)).willReturn(admin);
+
+        Response response = service.changePassword(USER_ID, USER_PASSWD, mockSecurityContext);
+
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    public void changePassword_returnsBadRequestForUnacceptablePassword() throws Exception {
+        given(mockSecurityContext.isUserInRole(UPDefaultRoles.ADMIN)).willReturn(false);
+        given(mockPasswordPolicy.isAcceptable(USER_PASSWD)).willReturn(false);
+
+        Response response = service.changePassword(USER_ID, USER_PASSWD, mockSecurityContext);
+
+        verify(userDaoMock, never()).changePassword(any(), any());
+
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    public void changePassword_returnsNotFoundForUnknownUser() throws Exception {
+        given(mockSecurityContext.isUserInRole(UPDefaultRoles.ADMIN)).willReturn(false);
+        given(mockPasswordPolicy.isAcceptable(USER_PASSWD)).willReturn(true);
+
+        given(userDaoMock.changePassword(USER_ID, USER_PASSWD)).willReturn(null);
+        Response response = service.changePassword(USER_ID, USER_PASSWD, mockSecurityContext);
+
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    public void updateUser_doesNotAllowNonAdminToUpdate() throws Exception {
+        given(mockSecurityContext.isUserInRole(UPDefaultRoles.ADMIN)).willReturn(false);
+
         given(userDaoMock.getById(USER_ID)).willReturn(userToMock);
-        given(userToMock.getName()).willReturn(USER_NAME);
 
         UserTO user = new UserTO();
         user.setPassword(USER_PASSWD);
@@ -305,19 +355,17 @@ public class UsersRestServiceTest {
 
         Response response = service.updateUser(USER_ID, user, mockSecurityContext);
 
-        verify(userDaoMock).update(user);
+        verify(userDaoMock, never()).update(any());
 
-        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        assertEquals(Response.Status.CONFLICT.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void updateUser_allowsAdminToChangeAnyPassword() throws Exception {
-        given(mockUserPrincipal.getName()).willReturn(OTHER_USER_NAME);
         given(mockSecurityContext.isUserInRole(UPDefaultRoles.ADMIN)).willReturn(true);
         given(mockPasswordPolicy.isAcceptable(USER_PASSWD)).willReturn(true);
 
         given(userDaoMock.getById(USER_ID)).willReturn(admin);
-        given(admin.getName()).willReturn(USER_NAME);
 
         UserTO user = new UserTO();
         user.setPassword(USER_PASSWD);
@@ -333,12 +381,10 @@ public class UsersRestServiceTest {
 
     @Test
     public void updateUser_returnsBadRequestForUnacceptablePassword() throws Exception {
-        given(mockUserPrincipal.getName()).willReturn(USER_NAME);
-        given(mockSecurityContext.isUserInRole(UPDefaultRoles.ADMIN)).willReturn(false);
+        given(mockSecurityContext.isUserInRole(UPDefaultRoles.ADMIN)).willReturn(true);
         given(mockPasswordPolicy.isAcceptable(USER_PASSWD)).willReturn(false);
 
         given(userDaoMock.getById(USER_ID)).willReturn(userToMock);
-        given(userToMock.getName()).willReturn(USER_NAME);
 
         UserTO user = new UserTO();
         user.setPassword(USER_PASSWD);

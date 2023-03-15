@@ -29,7 +29,7 @@ public class EPRStatusRestServiceTest {
     private static final String AUTH_HEADER = "someValidAuthHeader";
     private static final URI ABSOLUTE_PATH = URI.create("https://foo.bar/some/absolute/path/with/https/");
     private static final String RELATIVE_PATH_FOR_ROOT = "/users";
-
+    
     private static final String KEY_EVENTS_PROCESSED = "events_processed";
 
     @Mock(name = "eventProcessor")
@@ -38,6 +38,8 @@ public class EPRStatusRestServiceTest {
     @Mock(name = "context")
     protected UriInfo contextMock;
 
+    @InjectMocks
+    private EPRStatusRestService service;
 
     public EPRStatusRestServiceTest() {
     }
@@ -46,7 +48,19 @@ public class EPRStatusRestServiceTest {
     public void tearDown() {
     }
 
+    @Test
+    public void testGetEprStatus_returnsExpected() throws Exception {
+        given(eventProcessorMock.countProcessedEvents()).willReturn(4711L);
+        
+        Response response = service.getEprStatus(KEY_EVENTS_PROCESSED);
+        
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+    }
 
+    @Test
+    public void testGetEprStatus_wrongKey() throws Exception {
+        Response response = service.getEprStatus("wrongKey");
 
-
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+    }
 }

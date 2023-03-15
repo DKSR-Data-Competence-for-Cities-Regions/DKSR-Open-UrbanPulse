@@ -6,6 +6,7 @@ import de.urbanpulse.urbanpulsecontroller.admin.CategoryManagementDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.EventTypeManagementDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.ReferencedEntityMissingException;
 import de.urbanpulse.urbanpulsecontroller.admin.SensorManagementDAO;
+import de.urbanpulse.urbanpulsecontroller.admin.transfer.EventTypeTO;
 import de.urbanpulse.urbanpulsecontroller.admin.transfer.SensorTO;
 import de.urbanpulse.urbanpulsemanagement.restfacades.AbstractRestFacade;
 import de.urbanpulse.urbanpulsemanagement.services.factories.ErrorResponseFactory;
@@ -305,5 +306,15 @@ public class SensorsRestService extends AbstractRestService {
         }
 
         return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    public Response getSensorsBySchema(String schemaName) {
+        List<EventTypeTO> eventtypes = eventTypeDao.getFilteredBy("name", schemaName);
+        if (eventtypes.isEmpty()) {
+            return Response.ok(new SensorsWrapperTO().toJson().encode()).build();
+        } else {
+            String eventTypeId = eventtypes.get(0).getId();
+            return Response.ok(new SensorsWrapperTO(sensorDao.getSensorsByEventType(eventTypeId)).toJson().encode()).build();
+        }
     }
 }

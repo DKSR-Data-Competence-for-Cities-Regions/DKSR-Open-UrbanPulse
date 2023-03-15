@@ -35,6 +35,7 @@ public class UPModuleEntity implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date lastHeartbeat;
 
+    private boolean mailSent = false;
 
     @Enumerated(EnumType.STRING)
     private UPModuleState moduleState;
@@ -69,6 +70,14 @@ public class UPModuleEntity implements Serializable {
 
     public void setLastHeartbeat(Date lastHeartbeat) {
         this.lastHeartbeat = lastHeartbeat;
+    }
+
+    public boolean isMailSent() {
+        return mailSent;
+    }
+
+    public void setMailSent(boolean mailSent) {
+        this.mailSent = mailSent;
     }
 
     public JsonObject toJsonObject() {

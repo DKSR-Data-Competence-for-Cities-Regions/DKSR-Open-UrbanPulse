@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import static de.urbanpulse.urbanpulsecontroller.config.UPDefaultRoles.ADMIN;
+import static de.urbanpulse.urbanpulsecontroller.config.UPDefaultRoles.APP_USER;
 
 /**
  * REST web service to configure event processor statements
@@ -34,7 +35,7 @@ public class StatementsRestFacade extends AbstractRestFacade {
      * @param id of the statement to get the update listener for.
      * @return wrapped JSON array of update listeners for this statement
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, APP_USER}, logical = Logical.OR)
     @GET
     @Path("/{id}/update-listeners")
     @Produces(MediaType.APPLICATION_JSON + "; charset=utf-8")
@@ -44,7 +45,7 @@ public class StatementsRestFacade extends AbstractRestFacade {
         return service.getUpdateListeners(id);
     }
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, APP_USER}, logical = Logical.OR)
     @GET
     @Produces(MediaType.APPLICATION_JSON + "; charset=utf-8")
     @ApiOperation(value = "Retrieve all registered statements", response = StatementTO.class, responseContainer = "List")
@@ -52,7 +53,7 @@ public class StatementsRestFacade extends AbstractRestFacade {
         return service.getStatements();
     }
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, APP_USER}, logical = Logical.OR)
     @GET
     @Produces(MediaType.APPLICATION_JSON + "; charset=utf-8")
     @Path("/{id}")
@@ -61,7 +62,7 @@ public class StatementsRestFacade extends AbstractRestFacade {
         return service.getStatement(id);
     }
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, APP_USER}, logical = Logical.OR)
     @POST
     @Consumes(MediaType.APPLICATION_JSON + "; charset=utf-8")
     @ApiOperation(value = "Register new statement")
@@ -69,7 +70,7 @@ public class StatementsRestFacade extends AbstractRestFacade {
         return service.createStatement(statement, context, this);
     }
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, APP_USER}, logical = Logical.OR)
     @DELETE
     @Path("/{id}")
     @ApiOperation(value = "Remove registered statement with given ID. Will only work if every update listener for the given "
@@ -78,7 +79,7 @@ public class StatementsRestFacade extends AbstractRestFacade {
         return service.deleteStatement(id);
     }
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, APP_USER}, logical = Logical.OR)
     @POST
     @Path("/{id}/update-listeners")
     @Consumes(MediaType.APPLICATION_JSON + "; charset=utf-8")
@@ -88,7 +89,7 @@ public class StatementsRestFacade extends AbstractRestFacade {
         return service.registerUpdateListener(statementId, updateListener, context, this.getClass());
     }
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, APP_USER}, logical = Logical.OR)
     @GET
     @Produces("application/json" + "; charset=utf-8")
     @Path("/{statementId}/update-listeners/{listenerId}")
@@ -98,7 +99,7 @@ public class StatementsRestFacade extends AbstractRestFacade {
         return service.getListener(statementId, listenerId);
     }
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, APP_USER}, logical = Logical.OR)
     @DELETE
     @Path("/{statementId}/update-listeners/{listenerId}")
     @ApiOperation(value = "Remove registered update listener with given ID for statement with given ID")

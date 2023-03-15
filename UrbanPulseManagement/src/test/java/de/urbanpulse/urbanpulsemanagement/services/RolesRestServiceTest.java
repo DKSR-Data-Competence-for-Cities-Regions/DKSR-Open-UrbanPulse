@@ -6,6 +6,7 @@ import de.urbanpulse.urbanpulsecontroller.admin.transfer.PermissionTO;
 import de.urbanpulse.urbanpulsecontroller.admin.transfer.RoleTO;
 import de.urbanpulse.urbanpulsecontroller.admin.transfer.UserTO;
 import de.urbanpulse.urbanpulsecontroller.config.UPDefaultRoles;
+import de.urbanpulse.urbanpulsemanagement.restfacades.RolesRestFacade;
 import de.urbanpulse.urbanpulsemanagement.restfacades.dto.ScopesWithOperations;
 import de.urbanpulse.urbanpulsemanagement.services.helper.ShiroSubjectHelper;
 import de.urbanpulse.urbanpulsemanagement.services.wrapper.PersistenceV3Wrapper;
@@ -60,6 +61,8 @@ public class RolesRestServiceTest {
     private static final String OTHER_USER_NAME = "Remy";
 
     private static final String USER_PASSWD = "superSecret";
+    private static final RoleTO ROLE_APP_USER = new RoleTO(UUID.randomUUID().toString(), UPDefaultRoles.APP_USER);
+    private static final RoleTO ROLE_CONNECTOR_MANAGER = new RoleTO(UUID.randomUUID().toString(), UPDefaultRoles.CONNECTOR_MANAGER);
     private static final RoleTO ROLE_ADMIN = new RoleTO(UUID.randomUUID().toString(), UPDefaultRoles.ADMIN);
     private static final String NON_EXISTING_ROLE_ID = UUID.randomUUID().toString();
 
@@ -78,6 +81,8 @@ public class RolesRestServiceTest {
     @Mock(name = "context")
     protected UriInfo contextMock;
 
+    @Mock
+    private RolesRestFacade rolesRestFacadeMock;
 
     @Mock
     private UriBuilder mockUriBuilder;
@@ -152,10 +157,46 @@ public class RolesRestServiceTest {
         assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
+    @Test
+    public void testCreateRole_returnsExpected() throws Exception {
+        given(contextMock.getBaseUriBuilder()).willReturn(mockUriBuilder);
+        given(mockUriBuilder.path(any(Class.class))).willReturn(mockUriBuilder);
+        given(mockUriBuilder.path(anyString())).willReturn(mockUriBuilder);
+        given(mockUriBuilder.build()).willReturn(EXPECTED_LOCATION);
+        given(roleDaoMock.createRole(any(RoleTO.class))).willReturn(roleToMock);
+        given(roleToMock.getId()).willReturn("42");
 
+        RoleTO role = new RoleTO();
+        role.setName("Rollator");
+        role.setPermissions(Arrays.asList(PERMISSION_NONADMIN));
 
+        Response response = service.createRole(role, contextMock, rolesRestFacadeMock);
 
+        assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+    }
 
+    @Test
+    public void testCreateRole_returnsUnprocEntityForUnsupportedPermissions() throws Exception {
+
+        given(permissionDao.getById("bogusPermission")).willReturn(null);
+
+        RoleTO role = new RoleTO();
+        role.setName("Hamlet");
+        role.setPermissions(Arrays.asList(new PermissionTO("bogusPermission", "bogusPermission")));
+
+        Response response = service.createRole(role, contextMock, rolesRestFacadeMock);
+
+        assertEquals(AbstractRestService.HTTP_STATUS_UNPROCESSABLE_ENTITY, response.getStatus());
+    }
+
+    @Test
+    public void testDeleteRole_returnsExpected() throws Exception {
+        Response response = service.deleteRole(ROLE_APP_USER.getId());
+
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
+
+        verify(roleDaoMock).deleteById(ROLE_APP_USER.getId());
+    }
 
     @Test
     public void addPermission_returnsBadRequestForNotValidJsonBody() {

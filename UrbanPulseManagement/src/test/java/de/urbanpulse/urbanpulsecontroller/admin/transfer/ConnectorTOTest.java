@@ -32,6 +32,8 @@ public class ConnectorTOTest {
     final String EXPECTED_DESCRIPTION = "{\"name\":\"my little connector\"}";
     final String EXPECTED_ID = "00000000-0000-0000-0000-000000000013";
     final String EXPECTED_KEY = "theKeyTheSecret";
+    final String EXPECTED_BACKCHANNEL_KEY = "theBackchannelKeyTheSecret";
+    final String EXPECTED_BACKCHANNEL_ENDPOINT = "https://example.org";
     final String SENSOR_ID = "00000000-0000-0000-0000-000000004711";
     final String EXPECTED_SENSORS = "[\"" + SENSOR_ID + "\"]";
 
@@ -44,6 +46,8 @@ public class ConnectorTOTest {
 
         given(mockEntity.getId()).willReturn(EXPECTED_ID);
         given(mockEntity.getKey()).willReturn(EXPECTED_KEY);
+        given(mockEntity.getBackchannelKey()).willReturn(EXPECTED_BACKCHANNEL_KEY);
+        given(mockEntity.getBackchannelEndpoint()).willReturn(EXPECTED_BACKCHANNEL_ENDPOINT);
         given(mockEntity.getDescription()).willReturn(EXPECTED_DESCRIPTION);
         given(mockEntity.getSensors()).willReturn(sensors);
 
@@ -56,6 +60,8 @@ public class ConnectorTOTest {
 
         assertEquals("" + EXPECTED_ID, json.getString("id"));
         assertEquals(EXPECTED_KEY, json.getString("key"));
+        assertEquals(EXPECTED_BACKCHANNEL_KEY, json.getString("backchannelKey"));
+        assertEquals(EXPECTED_BACKCHANNEL_ENDPOINT, json.getString("backchannelEndpoint"));
         assertEquals(EXPECTED_DESCRIPTION, json.getJsonObject("description").toString());
         assertEquals(EXPECTED_SENSORS, json.getJsonArray("sensors").toString());
     }

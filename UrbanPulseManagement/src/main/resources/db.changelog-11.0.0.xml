@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
     <property name="unicodeVarcharType" value="nvarchar(MAX)" dbms="mssql"/>
     <property name="unicodeVarcharType" value="varchar" dbms="postgresql"/>
-
+    
     <changeSet author="[ui!]" id="1607503430785-1">
         <preConditions onFail="CONTINUE">
             <not>
@@ -29,8 +29,23 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_modul__3214EC278AAC35DE"/>
             </column>
             <column name="lastheartbeat" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column defaultValueBoolean="false" name="mailsent" type="BOOLEAN"/>
             <column name="moduletype" type="VARCHAR(255)"/>
             <column name="modulestate" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="[ui!]" id="1607503430785-3">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="up_backchannel_setup"/>
+            </not>
+        </preConditions>
+        <createTable tableName="up_backchannel_setup">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_backchannel_setup"/>
+            </column>
+            <column name="moduleid" type="VARCHAR(255)"/>
+            <column name="setupjson" type="${unicodeVarcharType}"/>
         </createTable>
     </changeSet>
     <changeSet author="[ui!]" id="1607503430785-4">
@@ -72,6 +87,8 @@
         <createTable tableName="up_connectors">
             <column name="description" type="${unicodeVarcharType}"/>
             <column name="secretkey" type="VARCHAR(255)"/>
+            <column name="backchannelendpoint" type="VARCHAR(255)"/>
+            <column name="backchannelkey" type="VARCHAR(255)"/>
             <column name="id" type="VARCHAR(36)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="PK__up_connectors"/>
             </column>

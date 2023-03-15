@@ -9,6 +9,7 @@ import io.vertx.core.json.JsonArray;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -123,5 +124,13 @@ public class VirtualSensorManagementDAO extends AbstractUUIDDAO<VirtualSensorEnt
         String query = queryTemplate.replace("<SID_PLACEHOLDER>", virtualSensorId);
         resultStatement.setQuery(query);
         entityManager.merge(resultStatement);
+    }
+
+    public List<VirtualSensorTO> getFilteredBySchema(String schemaName) {
+        return entityManager.createQuery("select vs from VirtualSensorEntity vs LEFT JOIN vs.resultEventType et where et.name = :name", VirtualSensorEntity.class)
+                .setParameter("name", schemaName)
+                .getResultList()
+                .stream()
+                .map(VirtualSensorTO::new).collect(Collectors.toList());
     }
 }

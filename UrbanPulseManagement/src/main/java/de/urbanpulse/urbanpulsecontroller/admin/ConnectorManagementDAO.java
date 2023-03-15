@@ -34,17 +34,24 @@ public class ConnectorManagementDAO extends AbstractUUIDDAO<ConnectorEntity, Con
      * @param description the description for the connector to create
      * @return the newly created connector
      */
-
-
     public ConnectorTO createConnector(String description) {
-        return createConnector(description, null);
+        return createConnector(description, null, null, null);
     }
 
-    public ConnectorTO createConnector(String description, String hmacKey) {
+    public ConnectorTO createConnector(String description, URI backchannelEndpoint) {
+        return createConnector(description, null, backchannelEndpoint, null);
+    }
+
+    public ConnectorTO createConnector(String description, String hmacKey, URI backchannelEndpoint, String backchannelKey) {
         try {
             ConnectorEntity connector = new ConnectorEntity();
             connector.setDescription(description);
             connector.setKey((hmacKey == null) ? generateRandomHmacSha256Key() : hmacKey);
+
+            if (backchannelEndpoint != null) {
+                connector.setBackchannelKey((backchannelKey == null) ? generateRandomHmacSha256Key() : backchannelKey);
+                connector.setBackchannelEndpoint(backchannelEndpoint.toString());
+            }
 
             entityManager.persist(connector);
             entityManager.flush();
@@ -57,16 +64,26 @@ public class ConnectorManagementDAO extends AbstractUUIDDAO<ConnectorEntity, Con
         return null;
     }
 
-
-
     /**
      *
      * @param id of the connector to update
      * @param description the new description for the connector to update
      * @return the id of the updated connector or null if the connector could not be updated
-     * @throws javax.naming.OperationNotSupportedException connector does not exist
+     * @throws OperationNotSupportedException connector does not exist
      */
     public ConnectorTO updateConnector(String id, String description) throws OperationNotSupportedException {
+        return updateConnector(id, description, null);
+    }
+
+    /**
+     *
+     * @param id of the connector to update
+     * @param description the new description for the connector to update
+     * @param backchannelEndpoint the new backchannel {@link URI} for the connector to update
+     * @return the id of the updated connector or null if the connector could not be updated
+     * @throws OperationNotSupportedException connector does not exist
+     */
+    public ConnectorTO updateConnector(String id, String description, URI backchannelEndpoint) throws OperationNotSupportedException {
         try {
             ConnectorEntity existingConnector = queryById(id);
             if (existingConnector == null) {
@@ -75,6 +92,11 @@ public class ConnectorManagementDAO extends AbstractUUIDDAO<ConnectorEntity, Con
 
             existingConnector.setDescription(description);
 
+            if (backchannelEndpoint != null) {
+                existingConnector.setBackchannelKey(generateRandomHmacSha256Key());
+                existingConnector.setBackchannelEndpoint(backchannelEndpoint.toString());
+            }
+
             ConnectorEntity mergedConnector = entityManager.merge(existingConnector);
             entityManager.flush();
 
@@ -82,7 +104,7 @@ public class ConnectorManagementDAO extends AbstractUUIDDAO<ConnectorEntity, Con
                 return toTransferObject(mergedConnector);
             }
 
-        } catch ( RuntimeException ex) {
+        } catch (NoSuchAlgorithmException | RuntimeException ex) {
             Logger.getLogger(ConnectorManagementDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 

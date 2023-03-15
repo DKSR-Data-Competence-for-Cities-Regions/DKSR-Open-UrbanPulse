@@ -70,7 +70,7 @@ public class ErrorResponseFactory {
      * @return A 500 Internal Server Error response, containing a JsonObject with the status and the given message
      */
     public static Response internalServerError(String message) {
-        return ErrorResponseFactory.fromStatus(Response.Status.INTERNAL_SERVER_ERROR, message);
+        return ErrorResponseFactory.fromStatus(Status.INTERNAL_SERVER_ERROR, message);
     }
 
     /**
@@ -86,7 +86,7 @@ public class ErrorResponseFactory {
      * @return A 500 Internal Server Error response, containing a JsonObject with the status and the given message
      */
     public static Response internalServerErrorFromException(Exception ex) {
-        return ErrorResponseFactory.fromStatus(Response.Status.INTERNAL_SERVER_ERROR, ex.getMessage());
+        return ErrorResponseFactory.fromStatus(Status.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 
     /**
@@ -101,7 +101,7 @@ public class ErrorResponseFactory {
      * @return A 400 Bad Request response, containing a JsonObject with the status and the given message
      */
     public static Response badRequest(String message) {
-        return ErrorResponseFactory.fromStatus(Response.Status.BAD_REQUEST, message);
+        return ErrorResponseFactory.fromStatus(Status.BAD_REQUEST, message);
     }
 
     /**
@@ -131,7 +131,7 @@ public class ErrorResponseFactory {
      * @return A 409 Conflict response, containing a JsonObject with the status and the given message
      */
     public static Response conflict(String message) {
-        return ErrorResponseFactory.fromStatus(Response.Status.CONFLICT, message);
+        return ErrorResponseFactory.fromStatus(Status.CONFLICT, message);
     }
 
     /**
@@ -146,7 +146,7 @@ public class ErrorResponseFactory {
      * @return A 500 response, containing a JsonObject with the status and the given message
      */
     public static Response notFound(String message) {
-        return ErrorResponseFactory.fromStatus(Response.Status.NOT_FOUND, message);
+        return ErrorResponseFactory.fromStatus(Status.NOT_FOUND, message);
     }
 
     /**

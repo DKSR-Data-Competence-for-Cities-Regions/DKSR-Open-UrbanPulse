@@ -7,6 +7,7 @@ import de.urbanpulse.urbanpulsecontroller.admin.EventTypeManagementDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.ReferencedEntityMissingException;
 import de.urbanpulse.urbanpulsecontroller.admin.SensorManagementDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.transfer.CategoryTO;
+import de.urbanpulse.urbanpulsecontroller.admin.transfer.EventTypeTO;
 import de.urbanpulse.urbanpulsecontroller.admin.transfer.SensorTO;
 import de.urbanpulse.urbanpulsemanagement.restfacades.CategoryRestFacade;
 import de.urbanpulse.urbanpulsemanagement.services.wrapper.SensorModuleUpdateWrapper;
@@ -125,6 +126,9 @@ public class SensorsRestServiceTest {
 
     @Mock
     private JsonObject mockJsonObject;
+    
+    @Mock
+    private EventTypeTO mockedEventType;
 
     @Mock
     private SensorsWrapperTO mockSensorsWrapperTO;
@@ -525,4 +529,28 @@ public class SensorsRestServiceTest {
         assertEquals(Response.Status.ACCEPTED.getStatusCode(), response.getStatus());
         verify(mockSensorDao, times(1)).updateSensor(anyString(), any(), anyString(), any(), anyString(), anyString());
     }
+    
+    @Test
+    public void test_getSensorsBySchema() {
+        List<SensorTO> list = new ArrayList<>();
+        list.add(mockSensorTO);
+        given(mockSensorDao.getSensorsByEventType(anyString())).willReturn(list);
+        given(mockSensorTO.toJson()).willReturn(new JsonObject().put("id", "test").put("name","test"));
+        List<EventTypeTO> eventtypes = new ArrayList<>();
+        eventtypes.add(mockedEventType);
+        given(mockedEventType.getId()).willReturn("test");
+        given(mockEventTypeDao.getFilteredBy(eq("name"), anyString())).willReturn(eventtypes);
+       
+        Response response = service.getSensorsBySchema("test");
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        verify(mockSensorDao, never()).getAll();
+
+        // Verify the response is valid json
+        assertTrue(response.getEntity() instanceof String);
+        String jsonString = (String) response.getEntity();
+        JsonObject jsonObject = new JsonObject(jsonString);
+        assertEquals("test", jsonObject.getJsonArray("sensors").getJsonObject(0).getString("id"));
+    }
+    
 }

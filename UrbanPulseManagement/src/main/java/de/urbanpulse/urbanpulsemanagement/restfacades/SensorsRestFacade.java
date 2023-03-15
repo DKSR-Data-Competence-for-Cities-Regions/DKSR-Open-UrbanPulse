@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 import static de.urbanpulse.urbanpulsecontroller.config.UPDefaultRoles.*;
 import static de.urbanpulse.urbanpulsemanagement.restfacades.SensorsRestFacade.ROOT_PATH;
+import de.urbanpulse.urbanpulsemanagement.services.factories.ErrorResponseFactory;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,19 +37,29 @@ public class SensorsRestFacade extends AbstractRestFacade {
      * retrieve registered sensors (all or those within a category) or filtered by a comma separated list
      *
      * @param categoryId    category ID string (if this is null all sensors are returned)
+     * @param schemaName the name of an event type / schema
      * @param listOfSensors (optional) comma separated string of sensorIDs
      * @return sensors wrapped in JSON object
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, APP_USER, CONNECTOR}, logical = Logical.OR)
     @GET
     @Produces("application/json" + "; charset=utf-8")
-    @ApiOperation(value = "retrieve all registered sensors filtered with the category id", response = SensorTO.class, responseContainer = "List")
-    public Response getSensors(@QueryParam("category") String categoryId, @QueryParam("sids") String listOfSensors) {
+    @ApiOperation(value = "retrieve all registered sensors filtered by either category id or schema", response = SensorTO.class, responseContainer = "List")
+    public Response getSensors(@QueryParam("category") String categoryId, @QueryParam("schema") String schemaName, @QueryParam("sids") String listOfSensors) {
         List<String> sidFilterList = null;
+        
+        if(schemaName != null && categoryId != null) {
+            return ErrorResponseFactory.badRequest("Sensors can be queried either by category or by schema.");
+        }
+        
         if (listOfSensors != null && !listOfSensors.isEmpty()) {
             sidFilterList = Arrays.asList(listOfSensors.split(","));
         }
-
+            
+        if(schemaName != null) {
+            return service.getSensorsBySchema(schemaName);
+        }
+     
         return service.getSensors(categoryId, sidFilterList);
     }
 
@@ -58,7 +69,7 @@ public class SensorsRestFacade extends AbstractRestFacade {
      * @param id sensor ID
      * @return 204 NO CONTENT
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER}, logical = Logical.OR)
     @DELETE
     @Path("/{id}")
     @ApiOperation(value = "delete a registered sensor specified by its id")
@@ -66,7 +77,7 @@ public class SensorsRestFacade extends AbstractRestFacade {
         return service.deleteSensor(id);
     }
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, APP_USER, CONNECTOR}, logical = Logical.OR)
     @GET
     @Path("/{id}")
     @Produces("application/json" + "; charset=utf-8")
@@ -81,7 +92,7 @@ public class SensorsRestFacade extends AbstractRestFacade {
      * @param sensorJson JSON string with eventtype, senderid, categories (array), description and location fields
      * @return 201 CREATED
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, CONNECTOR}, logical = Logical.OR)
     @POST
     @Consumes("application/json")
     @ApiOperation(value = "register a new sensor")
@@ -96,7 +107,7 @@ public class SensorsRestFacade extends AbstractRestFacade {
      * @param sensorJson JSON string with fields to be updated
      * @return 204 NO CONTENT
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, CONNECTOR}, logical = Logical.OR)
     @PUT
     @Path("/{id}")
     @Consumes("application/json")

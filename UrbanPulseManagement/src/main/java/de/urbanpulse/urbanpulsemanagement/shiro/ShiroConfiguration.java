@@ -8,6 +8,8 @@ import de.urbanpulse.dist.jee.upsecurityrealm.hmac.BodyWrapperFilter;
 import de.urbanpulse.dist.jee.upsecurityrealm.hmac.UPHMACCredentialMatcher;
 import de.urbanpulse.dist.jee.upsecurityrealm.hmac.UPHMACSecurityRealm;
 import de.urbanpulse.dist.jee.upsecurityrealm.hmac.UPHmacAuthenticationFilter;
+import de.urbanpulse.dist.jee.upsecurityrealm.oidc.UPPac4jSecurityRealm;
+import de.urbanpulse.dist.jee.upsecurityrealm.oidc.configuration.UserAuthenticatorCreator;
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.PasswordMatcher;
@@ -43,7 +45,10 @@ public class ShiroConfiguration {
     public WebSecurityManager getSecurityManager() {
         AuthorizingRealm pwRealm = new UPSecurityRealm();
 
+        UserAuthenticatorCreator userAuthenticatorCreator = new UserAuthenticatorCreator();
 
+        UPPac4jSecurityRealm upPac4jSecurityRealm =
+                new UPPac4jSecurityRealm(userAuthenticatorCreator.createUserInfoAuthenticator());
 
         CredentialsMatcher credentialsMatcher = new PasswordMatcher();
         ((PasswordMatcher) credentialsMatcher).setPasswordService(new UPPasswordService());
@@ -52,7 +57,7 @@ public class ShiroConfiguration {
         //There seems to be no point in adding a credentials matcher for oidc tokens.
         //Also after extending the logic we need a credentials matcher that does
         //nothing otherwise the flow gets broken. We get one token and another AuthenticationInfo for it.
-
+        upPac4jSecurityRealm.setCredentialsMatcher(new AllowAllCredentialsMatcher());
 
         AuthorizingRealm hmacRealm = new UPHMACSecurityRealm();
         hmacRealm.setCredentialsMatcher(new UPHMACCredentialMatcher());
@@ -60,7 +65,7 @@ public class ShiroConfiguration {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 
         Collection<Realm> realms = new ArrayList<>();
-
+        realms.add(upPac4jSecurityRealm);
         realms.add(pwRealm);
         realms.add(hmacRealm);
         securityManager.setRealms(realms);

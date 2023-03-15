@@ -8,6 +8,7 @@ import de.urbanpulse.transfer.TransportLayer;
 import de.urbanpulse.urbanpulsecontroller.admin.entities.modules.AbstractModuleSetupEntity;
 import de.urbanpulse.urbanpulsecontroller.admin.entities.modules.UPModuleEntity;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.AbstractSetupDAO;
+import de.urbanpulse.urbanpulsecontroller.admin.modules.BackchannelSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.EventProcessorSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.InboundSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.ModuleSetup;
@@ -35,7 +36,6 @@ import javax.ejb.Startup;
 import javax.inject.Inject;
 
 /**
- * singleton initialized on startup that keeps a {@link SetupMaster} which
  * listens to incoming vert.x messages from remote modules
  *
  * This code is published by DKSR Gmbh under the German Free Software License.
@@ -59,12 +59,12 @@ public class SetupMasterConnector {
     private HeartbeatHandler heartbeatHandler;
     @EJB
     private PersistenceV3SetupDAO persistenceV3SetupDAO;
-
     @EJB
     private EventProcessorSetupDAO eventProcessorSetupDAO;
     @EJB
     private OutboundSetupDAO outboundSetupDAO;
-
+    @EJB
+    private BackchannelSetupDAO backchannelSetupDAO;
     @EJB
     private ResetModulesFacade resetModulesFacade;
     private ConnectionHandler connectionHandler;
@@ -85,8 +85,8 @@ public class SetupMasterConnector {
             this.addModuleSetup(inboundSetupDAO)
                     .addModuleSetup(persistenceV3SetupDAO)
                     .addModuleSetup(eventProcessorSetupDAO)
-                    .addModuleSetup(outboundSetupDAO);
-
+                    .addModuleSetup(outboundSetupDAO)
+                    .addModuleSetup(backchannelSetupDAO);
             this.connectionHandler.setCommandHandler(this);
             this.connectionHandler.setConnectionId(SETUP_MASTER_ADDRESS, null);
         } catch (Exception ex) {
@@ -105,7 +105,7 @@ public class SetupMasterConnector {
         this.transactionDAO.deleteAll();
         this.inboundSetupDAO.clearAssignments();
         this.persistenceV3SetupDAO.clearAssignments();
-
+        this.backchannelSetupDAO.clearAssignments();
         this.moduleDAO.deleteAll();
         this.transport.publish("module_reset", new JsonObject());
         LOGGER.log(Level.INFO, "++++++++++++++++++  reset done +++++++++++++++ ");
@@ -137,6 +137,7 @@ public class SetupMasterConnector {
         // avoid timeout before first heartbeat signal
         module.setLastHeartbeat(new Date());
         module.setModuleState(UPModuleState.UNKNOWN);
+        module.setMailSent(false);
 
         LOGGER.log(Level.SEVERE, "Registration of {0} took : {1} ms", new Object[]{moduleType, System.currentTimeMillis() - start});
         callback.done(result, null);
@@ -258,6 +259,9 @@ public class SetupMasterConnector {
                 break;
             case InboundInterface:
                 setupDAOForModule = (AbstractSetupDAO)inboundSetupDAO;
+                break;
+            case Backchannel:
+                setupDAOForModule = (AbstractSetupDAO)backchannelSetupDAO;
                 break;
             //Outbound and CEP are not of type AbstractSetupDAO
             //but we dont want to log a warning when these methods are

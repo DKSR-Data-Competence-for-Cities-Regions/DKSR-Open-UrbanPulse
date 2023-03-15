@@ -40,7 +40,7 @@ public class ConnectorsRestFacade extends AbstractRestFacade {
      *
      * @return connectors wrapped in JSON object
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, APP_USER}, logical = Logical.OR)
     @GET
     @Produces("application/json" + "; charset=utf-8")
     @ApiOperation(value = "retrieve all registered connectors", response = ConnectorTO.class, responseContainer = "List")
@@ -55,7 +55,7 @@ public class ConnectorsRestFacade extends AbstractRestFacade {
      * @param id connector ID
      * @return connector
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, APP_USER, CONNECTOR}, logical = Logical.OR)
     @GET
     @Path("/{id}")
     @Produces("application/json" + "; charset=utf-8")
@@ -66,11 +66,11 @@ public class ConnectorsRestFacade extends AbstractRestFacade {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("Updated ID does not match connector id.").build();
             }
         }
-
+        
         return service.getConnector(id);
     }
 
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER}, logical = Logical.OR)
     @DELETE
     @Path("/{id}")
     @ApiOperation(value = "delete a registered connector specified by its id")
@@ -84,7 +84,7 @@ public class ConnectorsRestFacade extends AbstractRestFacade {
      * @param connectorJson serialized connector object with description field
      * @return 201 created response with location header set appropriately
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER}, logical = Logical.OR)
     @POST
     @Consumes("application/json")
     @ApiOperation(value = "register a new connector")
@@ -99,7 +99,7 @@ public class ConnectorsRestFacade extends AbstractRestFacade {
      * @param connectorJson serialized connector object with description field
      * @return 204 NO CONTENT on success
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, CONNECTOR}, logical = Logical.OR)
     @PUT
     @Consumes("application/json")
     @Path("/{id}")
@@ -119,7 +119,7 @@ public class ConnectorsRestFacade extends AbstractRestFacade {
      * @param connectorId category ID string
      * @return sensors wrapped in JSON object
      */
-    @RequiresRoles(ADMIN)
+    @RequiresRoles(value = {ADMIN, CONNECTOR_MANAGER, APP_USER, CONNECTOR}, logical = Logical.OR)
     @GET
     @Produces("application/json" + "; charset=utf-8")
     @Path("/{id}/sensors")
@@ -131,10 +131,10 @@ public class ConnectorsRestFacade extends AbstractRestFacade {
     public Response getSensorsForConnector(@PathParam("id") String connectorId) {
         return service.getSensorsForConnector(connectorId);
     }
-
+    
     protected boolean isRequestingConnectorAllowed(String id) {
         LoginToken token = (LoginToken) SecurityUtils.getSubject().getPrincipal();
-        return (token.getAuthmode().equals(UPAuthMode.BASIC) || token.getAuthmode().equals(UPAuthMode.UP)) ||
+        return (token.getAuthmode().equals(UPAuthMode.BASIC) || token.getAuthmode().equals(UPAuthMode.UP)) || 
                 (token.getAuthmode().equals(UPAuthMode.UPCONNECTOR) && token.getSubjectId().equals(id));
     }
 

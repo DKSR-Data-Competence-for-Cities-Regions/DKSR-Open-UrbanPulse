@@ -10,6 +10,7 @@ import de.urbanpulse.urbanpulsemanagement.services.wrapper.EventProcessorWrapper
 import de.urbanpulse.urbanpulsemanagement.util.EventTypesRegistrar;
 import de.urbanpulse.urbanpulsemanagement.virtualsensors.VirtualSensorsCreator;
 import de.urbanpulse.urbanpulsemanagement.virtualsensors.VirtualSensorsErrorResponseFactory;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -180,12 +181,36 @@ public class VirtualSensorsRestServiceTest {
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
         assertSame(mockVirtualSensorJson, response.getEntity());
     }
+    
+    @Test
+    public void getVirtualSensors_all_conditions() {
+               
+        when(mockVirtualSensorsDao.getFilteredByCategory(anyString())).thenReturn(new ArrayList<>());
+        when(mockVirtualSensorsDao.getFilteredBySchema(anyString())).thenReturn(new ArrayList<>());
+        when(mockVirtualSensorsDao.getFilteredByResultStatementName(anyString())).thenReturn(new ArrayList<>());
+        when(mockVirtualSensorsDao.getAll()).thenReturn(new ArrayList<>());
+        
+        service.getVirtualSensors(null, null, null);
+        verify(mockVirtualSensorsDao,times(1)).getAll();
+        //service.getVirtualSensors(CATEGORY_ID, RESULT_STATEMENT_NAME, STATEMENT_NAME)
+        service.getVirtualSensors("id", null, null);
+        verify(mockVirtualSensorsDao,times(1)).getFilteredByCategory(anyString());
+        
+        service.getVirtualSensors(null, "id", null);
+        verify(mockVirtualSensorsDao,times(1)).getFilteredByResultStatementName(anyString());
+        
+        service.getVirtualSensors(null, null, "id");
+        verify(mockVirtualSensorsDao,times(1)).getFilteredBySchema(anyString());
+        
+        
+        //verify(mockVirtualSensorsDao,times(1)).getFilteredByCategory(anyString());
+    }
 
     @Test
     public void getVirtualSensors_returnsAllForNullCategoryId() throws Exception {
         given(mockVirtualSensorsDao.getAll()).willReturn(dummySensors);
 
-        Response response = service.getVirtualSensors(null, null);
+        Response response = service.getVirtualSensors(null, null, null);
 
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
 
@@ -198,7 +223,7 @@ public class VirtualSensorsRestServiceTest {
 
         given(mockVirtualSensorsDao.getFilteredByCategory(CATEGORY_ID)).willReturn(dummySensors);
 
-        Response response = service.getVirtualSensors(CATEGORY_ID, null);
+        Response response = service.getVirtualSensors(CATEGORY_ID, null, null);
 
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
 
@@ -208,7 +233,7 @@ public class VirtualSensorsRestServiceTest {
 
     @Test
     public void getVirtualSensors_returns400IfBothCategoryAndResultStatementIdGiven() throws Exception {
-        Response response = service.getVirtualSensors(CATEGORY_ID, RESULT_STATEMENT_NAME);
+        Response response = service.getVirtualSensors(CATEGORY_ID, RESULT_STATEMENT_NAME, null);
 
         assertEquals(400, response.getStatus());
     }
@@ -217,7 +242,7 @@ public class VirtualSensorsRestServiceTest {
     public void getVirtualSensors_returnsWithResultStatementNameForResultStatementName() throws Exception {
         given(mockVirtualSensorsDao.getFilteredByResultStatementName(RESULT_STATEMENT_NAME)).willReturn(dummySensors);
 
-        Response response = service.getVirtualSensors(null, RESULT_STATEMENT_NAME);
+        Response response = service.getVirtualSensors(null, RESULT_STATEMENT_NAME, null);
 
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
 

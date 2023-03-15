@@ -4,26 +4,22 @@ import de.urbanpulse.dist.jee.entities.RoleEntity;
 import de.urbanpulse.dist.jee.entities.UserEntity;
 import de.urbanpulse.urbanpulsecontroller.admin.transfer.RoleTO;
 import de.urbanpulse.urbanpulsecontroller.admin.transfer.UserTO;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
 import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.mockito.BDDMockito.given;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 /**
  * This code is published by DKSR Gmbh under the German Free Software License.
@@ -174,5 +170,19 @@ public class UserManagementDAOTest {
         verify(entityManager).flush();
 
         assertEquals(USER_ID_STRING, returnedUserTO.getId());
+    }
+
+    @Test
+    public void changePassword_returnsExpected() {
+        given(entityManager.find(UserEntity.class, USER_ID_STRING)).willReturn(userMock);
+        given(userMock.getId()).willReturn(USER_ID_STRING);
+
+        final UserTO userTO = userDao.changePassword(USER_ID_STRING, "newPassword");
+
+        verify(userMock).setPasswordHash(anyString());
+        verify(entityManager).merge(any(UserEntity.class));
+        verify(entityManager).flush();
+
+        assertEquals(USER_ID_STRING, userTO.getId());
     }
 }

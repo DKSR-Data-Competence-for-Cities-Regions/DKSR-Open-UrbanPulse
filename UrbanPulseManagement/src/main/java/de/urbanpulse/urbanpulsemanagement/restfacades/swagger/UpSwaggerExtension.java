@@ -70,11 +70,11 @@ public class UpSwaggerExtension extends AbstractSwaggerExtension {
         stringBuilder.append(UP_AUTHORIZATION);
         operation.addSecurity(HMAC_AUTH_MODE_STRING, Collections.emptyList());
 
-        /*if(roles.contains(UPDefaultRoles.CONNECTOR)) {
+        if(roles.contains(UPDefaultRoles.CONNECTOR)) {
             LOG.fine("Adding documentation for: " + UPDefaultRoles.CONNECTOR);
             stringBuilder.append(CONNECTOR_AUTHORIZATION);
             operation.addSecurity(UPDefaultRoles.CONNECTOR, Collections.emptyList());
-        }*/
+        }
 
         LOG.fine("Number of security elements for operation: " + operation.getSecurity().size());
 

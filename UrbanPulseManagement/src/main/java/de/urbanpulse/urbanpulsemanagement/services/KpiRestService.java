@@ -2,6 +2,7 @@ package de.urbanpulse.urbanpulsemanagement.services;
 
 import de.urbanpulse.urbanpulsecontroller.admin.entities.modules.UPModuleEntity;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.AbstractSetupDAO;
+import de.urbanpulse.urbanpulsecontroller.admin.modules.BackchannelSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.EventProcessorSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.InboundSetupDAO;
 import de.urbanpulse.urbanpulsecontroller.admin.modules.OutboundSetupDAO;
@@ -19,6 +20,7 @@ import io.vertx.core.json.JsonObject;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import javax.ejb.EJB;
 import javax.ws.rs.core.Response;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -45,6 +47,8 @@ public class KpiRestService extends AbstractRestService {
     @Inject
     private EventProcessorSetupDAO eventProcessorSetupDAO;
 
+    @EJB
+    private BackchannelSetupDAO backchannelSetupDAO;
 
     @Inject
     private InboundSetupDAO inboundSetupDAO;
@@ -130,6 +134,9 @@ public class KpiRestService extends AbstractRestService {
             case EventProcessor:
             case OutboundInterface:
                 return 1;
+            case Backchannel:
+                currentDAO = backchannelSetupDAO;
+                break;
             case InboundInterface:
                 currentDAO = inboundSetupDAO;
                 break;

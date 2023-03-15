@@ -59,15 +59,17 @@ public class CommandsJsonFactory {
         JsonObject command = createCommand("unregisterEventType", args, UPModuleType.EventProcessor);
         return command;
     }
-
-    public JsonObject createRegisterConnectorCommands(String connectorId, String authKey) {
+    
+    public JsonObject createRegisterConnectorCommands(String connectorId, String authKey, String backchannelKey, String backchannelEndpoint) {
         JsonObject inboundCommand = createInboundConnectorCommand(connectorId, authKey, "registerConnector");
-        return createCommandsForModuleType(inboundCommand);
+        JsonObject backchannelCommand = createBackchannelConnectorCommand(connectorId, backchannelKey, backchannelEndpoint, "registerConnector");
+        return createCommandsForModuleType(inboundCommand, backchannelCommand);
     }
 
-    public JsonObject createUpdateConnectorCommands(String connectorId, String authKey) {
+    public JsonObject createUpdateConnectorCommands(String connectorId, String authKey, String backchannelKey, String backchannelEndpoint) {
         JsonObject inboundCommand = createInboundConnectorCommand(connectorId, authKey, "updateConnector");
-        return createCommandsForModuleType(inboundCommand);
+        JsonObject backchannelCommand = createBackchannelConnectorCommand(connectorId, backchannelKey, backchannelEndpoint, "updateConnector");
+        return createCommandsForModuleType(inboundCommand, backchannelCommand);
     }
 
     private JsonObject createInboundConnectorCommand(String connectorId, String authKey, String command) {
@@ -78,27 +80,41 @@ public class CommandsJsonFactory {
         args.put("connectorAuth", connectorAuth);
         return createCommand(command, args, UPModuleType.InboundInterface);
     }
-
+    
     public JsonObject createUnregisterConnectorCommands(String connectorId) {
         JsonObject inboundCommand = createUnregisterConnectorCommand(connectorId, UPModuleType.InboundInterface);
-        return createCommandsForModuleType(inboundCommand);
+        JsonObject backchannelCommand = createUnregisterConnectorCommand(connectorId, UPModuleType.Backchannel);
+        return createCommandsForModuleType(inboundCommand, backchannelCommand);
     }
-
+    
     public JsonObject createUnregisterConnectorCommand(String connectorId, UPModuleType type) {
         JsonObject connectorParams = new JsonObject();
         connectorParams.put("connectorId", connectorId);
 
         return createCommand("unregisterConnector", connectorParams, type);
     }
+    
+    private JsonObject createBackchannelConnectorCommand(String connectorId, String backchannelKey, String backchannelEndpoint, String command) {
+        JsonObject connectorParams = new JsonObject();
+        connectorParams.put("connectorId", connectorId);
+        connectorParams.put("backchannelKey", backchannelKey);
+        connectorParams.put("backchannelEndpoint", backchannelEndpoint);
 
-
+        return createCommand(command, connectorParams, UPModuleType.Backchannel);
+    }
 
     public JsonObject createRegisterSensorCommands(String sensorId, String eventTypeName, String connectorId) {
         JsonObject inboundArgs = new JsonObject();
         inboundArgs.put("sensorId", sensorId);
         inboundArgs.put("eventTypeName", eventTypeName);
         JsonObject inboundCommand = createCommand("registerSensor", inboundArgs, UPModuleType.InboundInterface);
-        return createCommandsForModuleType(inboundCommand);
+        
+        JsonObject backchannelArgs = new JsonObject();
+        backchannelArgs.put("sensorId", sensorId);
+        backchannelArgs.put("connectorId", connectorId);
+        JsonObject backchannelCommand = createCommand("registerSensor", backchannelArgs, UPModuleType.Backchannel);
+        
+        return createCommandsForModuleType(inboundCommand, backchannelCommand);
     }
 
     public JsonObject createUpdateSensorCommands(String sensorId, String eventTypeName) {
@@ -106,8 +122,8 @@ public class CommandsJsonFactory {
         args.put("sensorId", sensorId);
         args.put("eventTypeName", eventTypeName);
         JsonObject command = createCommand("updateSensor", args, UPModuleType.InboundInterface);
-
-
+        
+        // The backchannel module doesn't have to be notified about sensor updates, the connector ID cannot be changed after creation
         return createCommandsForModuleType(command);
     }
 
@@ -115,7 +131,8 @@ public class CommandsJsonFactory {
         JsonObject args = new JsonObject();
         args.put("sensorId", sensorId);
         JsonObject inboundCommand = createCommand("unregisterSensor", args.copy(), UPModuleType.InboundInterface);
-        return createCommandsForModuleType(inboundCommand);
+        JsonObject backchannelCommand = createCommand("unregisterSensor", args.copy(), UPModuleType.Backchannel);
+        return createCommandsForModuleType(inboundCommand, backchannelCommand);
     }
 
     public JsonObject createSetSensorEventTypesCommands() {
@@ -160,7 +177,7 @@ public class CommandsJsonFactory {
         JsonObject command = createCommand("unregisterStatement", args, UPModuleType.EventProcessor);
         return createCommandsForModuleType(command);
     }
-
+    
     public JsonObject createRegisterVirtualSensorCommands(String virtualSensorId, JsonArray eventTypes, JsonArray statements, JsonObject resultStatement, JsonObject resultEventType) {
         JsonObject args = new JsonObject()
                 .put("eventTypes", eventTypes)

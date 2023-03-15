@@ -97,7 +97,7 @@ public class ConnectorsRestServiceTest {
 
     public ConnectorsRestServiceTest() {
     }
-
+    
     @After
     public void tearDown() {
     }
@@ -215,7 +215,8 @@ public class ConnectorsRestServiceTest {
 
         given(mockConnectorDao.createConnector(anyString())).willReturn(mockConnectorTO);
         given(mockConnectorTO.getId()).willReturn("4711");
-
+        given(mockConnectorTO.getBackchannelEndpoint()).willReturn("BackchannelEndpoint");
+        given(mockConnectorTO.getBackchannelKey()).willReturn("BackchannelKey");
         given(mockConnectorTO.getKey()).willReturn("Key");
 
         given(mockContext.getBaseUriBuilder()).willReturn(mockUriBuilder);
@@ -223,7 +224,7 @@ public class ConnectorsRestServiceTest {
         given(mockUriBuilder.path(anyString())).willReturn(mockUriBuilder);
         given(mockUriBuilder.build()).willReturn(EXPECTED_LOCATION);
         Mockito.doThrow(new SensorModuleUpdateWrapperException()).doNothing().when(mockSensorModuleUpdateWrapper)
-                .registerConnector(anyString(), anyString());
+                .registerConnector(anyString(), anyString(), anyString(), anyString());
 
         Response response = connectorsRestService.createConnector(descriptionAsString, mockContext, mockConnectorsRestFacade);
 
@@ -233,10 +234,10 @@ public class ConnectorsRestServiceTest {
     }
 
     @Test
-    public void testCreateConnector_ShouldSucceed() {
-        String json = "{\"description\":{\"name\":\"TestConnector\"}}";
+    public void testCreateConnector_WithValidBackchannelEndpoint_ShouldSucceed() {
+        String json = "{\"description\":{\"name\":\"TestConnector\"},\"backchannelEndpoint\":\"http://example.org\"}";
 
-        given(mockConnectorDao.createConnector(anyString())).willReturn(mockConnectorTO);
+        given(mockConnectorDao.createConnector(anyString(), any(URI.class))).willReturn(mockConnectorTO);
         given(mockConnectorTO.getId()).willReturn("4711");
 
         given(mockContext.getBaseUriBuilder()).willReturn(mockUriBuilder);
@@ -250,8 +251,8 @@ public class ConnectorsRestServiceTest {
     }
 
     @Test
-    public void testCreateConnector_ShouldFailWithHttp400() {
-        String json = "{\"description\":{\"name\":\"TestConnector\"}}";
+    public void testCreateConnector_WithInvalidBackchannelEndpoint_ShouldFailWithHttp400() {
+        String json = "{\"description\":{\"name\":\"TestConnector\"},\"backchannelEndpoint\":\"|example\"}";
 
         Response response = connectorsRestService.createConnector(json, mockContext, mockConnectorsRestFacade);
 
@@ -264,6 +265,8 @@ public class ConnectorsRestServiceTest {
 
         given(mockConnectorDao.createConnector(anyString())).willReturn(mockConnectorTO);
         given(mockConnectorTO.getId()).willReturn("4711");
+        given(mockConnectorTO.getBackchannelEndpoint()).willReturn("BackchannelEndpoint");
+        given(mockConnectorTO.getBackchannelKey()).willReturn("BackchannelKey");
         given(mockConnectorTO.getKey()).willReturn("Key");
 
         given(mockContext.getBaseUriBuilder()).willReturn(mockUriBuilder);
@@ -274,7 +277,7 @@ public class ConnectorsRestServiceTest {
         connectorsRestService.createConnector(Json, mockContext, mockConnectorsRestFacade);
 
         ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
-        verify(mockSensorModuleUpdateWrapper).registerConnector(argument1.capture(), anyString());
+        verify(mockSensorModuleUpdateWrapper).registerConnector(argument1.capture(), anyString(), anyString(), anyString());
         assertEquals("4711", argument1.<String>getValue());
     }
 
@@ -344,10 +347,12 @@ public class ConnectorsRestServiceTest {
 
         given(mockConnectorDao.updateConnector(anyString(), anyString())).willReturn(mockConnectorTO);
         given(mockConnectorTO.getId()).willReturn("4711");
+        given(mockConnectorTO.getBackchannelEndpoint()).willReturn("BackchannelEndpoint");
+        given(mockConnectorTO.getBackchannelKey()).willReturn("BackchannelKey");
         given(mockConnectorTO.getKey()).willReturn("Key");
-
+        
         Mockito.doThrow(new SensorModuleUpdateWrapperException()).doNothing().when(mockSensorModuleUpdateWrapper)
-                .updateConnector(anyString(), anyString());
+                .updateConnector(anyString(), anyString(), anyString(), anyString());
 
         Response response = connectorsRestService.updateConnector(CONNECTOR_ID, descriptionAsString);
 
@@ -357,10 +362,10 @@ public class ConnectorsRestServiceTest {
     }
 
     @Test
-    public void testUpdateConnector_ShouldSucceed() throws OperationNotSupportedException {
-        String json = "{\"description\":{\"name\":\"TestConnector\"}}";
+    public void testUpdateConnector_WithValidBackchannelEndpoint_ShouldSucceed() throws OperationNotSupportedException {
+        String json = "{\"description\":{\"name\":\"TestConnector\"},\"backchannelEndpoint\":\"http://example.org\"}";
 
-        given(mockConnectorDao.updateConnector(anyString(), anyString())).willReturn(mockConnectorTO);
+        given(mockConnectorDao.updateConnector(anyString(), anyString(), any(URI.class))).willReturn(mockConnectorTO);
 
         Response response = connectorsRestService.updateConnector(CONNECTOR_ID, json);
 
@@ -368,8 +373,8 @@ public class ConnectorsRestServiceTest {
     }
 
     @Test
-    public void testUpdateConnector_ShouldFailWithHttp400() throws OperationNotSupportedException {
-        String json = "{\"description\":{\"name\":\"TestConnector\"}}";
+    public void testUpdateConnector_WithInvalidBackchannelEndpoint_ShouldFailWithHttp400() throws OperationNotSupportedException {
+        String json = "{\"description\":{\"name\":\"TestConnector\"},\"backchannelEndpoint\":\"|example\"}";
 
         Response response = connectorsRestService.updateConnector(CONNECTOR_ID, json);
 
@@ -382,13 +387,14 @@ public class ConnectorsRestServiceTest {
 
         given(mockConnectorDao.updateConnector(anyString(), anyString())).willReturn(mockConnectorTO);
         given(mockConnectorTO.getId()).willReturn("4711");
-
+        given(mockConnectorTO.getBackchannelEndpoint()).willReturn("BackchannelEndpoint");
+        given(mockConnectorTO.getBackchannelKey()).willReturn("BackchannelKey");
         given(mockConnectorTO.getKey()).willReturn("Key");
 
         connectorsRestService.updateConnector(CONNECTOR_ID, Json);
 
         ArgumentCaptor<String> argument1 = ArgumentCaptor.forClass(String.class);
-        verify(mockSensorModuleUpdateWrapper).updateConnector(argument1.capture(), anyString());
+        verify(mockSensorModuleUpdateWrapper).updateConnector(argument1.capture(), anyString(), anyString(), anyString());
         assertEquals("4711", argument1.<String>getValue());
     }
 
@@ -425,10 +431,11 @@ public class ConnectorsRestServiceTest {
         mockSensorTOs.add(mockSensorTO);
 
         given(mockConnectorDao.queryById(CONNECTOR_ID)).willReturn(mockConnectorEntity);
-        given(mockConnectorEntity.getSensors()).willReturn(mockSensorEntities);
-
+        given(mockSensorDao.getSensorsOfConnector(CONNECTOR_ID)).willReturn(mockSensorTOs);
+        //given(mockConnectorEntity.getSensors()).willReturn(mockSensorEntities);
+       
         given(mockSensorTO.toJson()).willReturn(mockJsonObjectVertx);
-        given(mockTransferObjectFactory.createList(mockSensorEntities, SensorEntity.class, SensorTO.class)).willReturn(mockSensorTOs);
+      
         Response response = connectorsRestService.getSensorsForConnector(CONNECTOR_ID);
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());

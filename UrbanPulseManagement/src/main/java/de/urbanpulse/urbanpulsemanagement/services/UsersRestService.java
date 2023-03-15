@@ -16,7 +16,15 @@ import de.urbanpulse.urbanpulsemanagement.services.factories.ErrorResponseFactor
 import de.urbanpulse.urbanpulsemanagement.services.helper.ShiroSubjectHelper;
 import de.urbanpulse.urbanpulsemanagement.services.wrapper.PersistenceV3Wrapper;
 import de.urbanpulse.urbanpulsemanagement.util.PasswordPolicy;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.net.URI;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -25,15 +33,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 
 /**
  * REST Web Service for user management
@@ -91,13 +90,13 @@ public class UsersRestService extends AbstractRestService {
         if (currentUser.hasRole(UPDefaultRoles.ADMIN) || currentUser.isPermitted("users:read:" + id) || subjectId.equals(id)) {
             UserTO user = dao.getById(id);
             if (user == null) {
-                return ErrorResponseFactory.notFound("user with id[" + id + "] not found");
+                return userNotFound(id);
             } else {
                 user.setSecretKey(null);
                 return Response.ok(user).build();
             }
         } else {
-            return ErrorResponseFactory.notFound("user with id[" + id + "] not found");
+            return userNotFound(id);
         }
 
     }
@@ -177,10 +176,29 @@ public class UsersRestService extends AbstractRestService {
         return Response.noContent().build();
     }
 
+    public Response changePassword(String id, String password, SecurityContext context) {
+        boolean updateAllowed = context.isUserInRole(UPDefaultRoles.ADMIN) || id.equals(subjectHelper.getSubjectId());
+
+        if (!updateAllowed) {
+            return ErrorResponseFactory.forbidden("changing password of user with id[" + id + "] forbidden");
+        } else if (!passwordPolicy.isAcceptable(password)) {
+            return ErrorResponseFactory.badRequest("Password does not meet policy requirements. "
+                    + "Must be 8 or more characters with at least one character out of each of the following group: "
+                    + PasswordPolicy.PASSWORD_POLICY_HUMAN_READABLE);
+        }
+
+        final UserTO user = dao.changePassword(id, password);
+        if (user == null) {
+            return userNotFound(id);
+        }
+
+        return Response.noContent().build();
+    }
+
     public Response resetKey(String id, SecurityContext securityContext) {
         UserTO persistedUser = dao.getById(id);
         if (persistedUser == null) {
-            return ErrorResponseFactory.notFound("user with id[" + id + "] not found");
+            return userNotFound(id);
         }
 
         LoginToken token = getLoginToken();
@@ -222,13 +240,10 @@ public class UsersRestService extends AbstractRestService {
 
         UserTO persistedUser = dao.getById(id);
         if (persistedUser == null) {
-            return ErrorResponseFactory.notFound("user with id[" + id + "] not found");
+            return userNotFound(id);
         }
 
         final boolean isAdmin = securityContext.isUserInRole(UPDefaultRoles.ADMIN);
-        final String requestingUserName = securityContext.getUserPrincipal().getName();
-        final String userName = persistedUser.getName();
-        final boolean isSelfUpdate = Objects.equals(requestingUserName, userName);
         final boolean allRolesExist = user
                 .getRoles()
                 .stream()
@@ -241,7 +256,6 @@ public class UsersRestService extends AbstractRestService {
                 .map(PermissionTO::getId)
                 .map(permissionDao::getById)
                 .allMatch(Objects::nonNull);
-        final boolean updateAllowed = (isAdmin | isSelfUpdate);
 
         if (!allRolesExist || !allPermissionsExist) {
             String message = "could not update user with id [" + id + "]";
@@ -253,7 +267,7 @@ public class UsersRestService extends AbstractRestService {
             }
             return ErrorResponseFactory.unprocessibleEntity(message);
         }
-        if (!updateAllowed) {
+        if (!isAdmin) {
             String message = "not allowed to update user with id [" + id + "]";
             return ErrorResponseFactory.conflict(message);
         }
@@ -268,6 +282,10 @@ public class UsersRestService extends AbstractRestService {
         dao.update(user);
 
         return Response.ok(user).build();
+    }
+
+    private static Response userNotFound(String id) {
+        return ErrorResponseFactory.notFound("user with id[" + id + "] not found");
     }
 
     /**

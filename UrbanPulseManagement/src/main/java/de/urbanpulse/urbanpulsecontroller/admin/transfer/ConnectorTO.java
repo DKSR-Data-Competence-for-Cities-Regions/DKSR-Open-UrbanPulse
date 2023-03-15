@@ -26,7 +26,8 @@ public class ConnectorTO implements Serializable {
     private String description;
     private String key;
     private List<String> sensors;
-
+    private String backchannelEndpoint;
+    private String backchannelKey;
 
     public ConnectorTO() {
     }
@@ -38,7 +39,8 @@ public class ConnectorTO implements Serializable {
         this.id = entity.getId();
         this.description = entity.getDescription();
         this.key = entity.getKey();
-
+        this.backchannelKey = entity.getBackchannelKey();
+        this.backchannelEndpoint = entity.getBackchannelEndpoint();
 
         this.sensors = new LinkedList<>();
         for (SensorEntity sensor : entity.getSensors()) {
@@ -96,6 +98,21 @@ public class ConnectorTO implements Serializable {
         this.sensors = sensors;
     }
 
+    public String getBackchannelEndpoint() {
+        return backchannelEndpoint;
+    }
+
+    public void setBackchannelEndpoint(String backchannelEndpoint) {
+        this.backchannelEndpoint = backchannelEndpoint;
+    }
+
+    public String getBackchannelKey() {
+        return backchannelKey;
+    }
+
+    public void setBackchannelKey(String backchannelKey) {
+        this.backchannelKey = backchannelKey;
+    }
 
     @Override
     public int hashCode() {
@@ -140,6 +157,19 @@ public class ConnectorTO implements Serializable {
             }
 
             b.add("sensors", arrayBuilder.build());
+
+            if (this.backchannelEndpoint == null) {
+                b.addNull("backchannelEndpoint");
+            } else {
+                b.add("backchannelEndpoint", this.backchannelEndpoint);
+            }
+
+            if (this.backchannelKey == null) {
+                b.addNull("backchannelKey");
+            } else {
+                b.add("backchannelKey", this.backchannelKey);
+            }
+
             return b.build();
         }
     }

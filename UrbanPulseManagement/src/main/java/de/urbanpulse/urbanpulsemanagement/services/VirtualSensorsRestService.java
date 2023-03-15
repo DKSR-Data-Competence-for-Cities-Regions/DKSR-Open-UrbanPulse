@@ -55,21 +55,25 @@ public class VirtualSensorsRestService extends AbstractRestService {
 
     private static final String KEY_TARGETS = "targets";
 
-    public Response getVirtualSensors(String categoryId, String resultStatementName) {
+    public Response getVirtualSensors(String categoryId, String resultStatementName, String schemaName) {
         List<VirtualSensorTO> virtualSensors;
-        if (categoryId == null && resultStatementName == null) {
+        if (categoryId == null && schemaName == null && resultStatementName == null) {
             virtualSensors = virtualSensorsDAO.getAll();
-        } else if (categoryId == null && resultStatementName != null) {
+        } else if (categoryId == null && schemaName == null) {
             virtualSensors = virtualSensorsDAO.getFilteredByResultStatementName(resultStatementName);
-        } else if (categoryId != null && resultStatementName != null) {
-            return ErrorResponseFactory.badRequest("do not specify both categoryId and resultStatementName at the same time");
-        } else {
+        } else if (schemaName == null && resultStatementName == null ) {
             virtualSensors = virtualSensorsDAO.getFilteredByCategory(categoryId);
+        }  else if (categoryId == null && resultStatementName == null ) {
+            virtualSensors = virtualSensorsDAO.getFilteredBySchema(schemaName);
+        } else {
+            return ErrorResponseFactory.badRequest("do not specify categoryId, schemaName and/or resultStatementName at the same time");
         }
 
         VirtualSensorsWrapperTO wrapper = new VirtualSensorsWrapperTO(virtualSensors);
         return Response.ok(wrapper.toJson()).build();
     }
+    
+    
 
     /**
      * @param sid the id of the searched sensor
@@ -152,8 +156,8 @@ public class VirtualSensorsRestService extends AbstractRestService {
 
     /**
      * @param jsonString a string representation of the configuration for the sensor
-     * @param context    used to get base builder for the URI
-     * @param facade     the REST facade
+     * @param context used to get base builder for the URI
+     * @param facade the REST facade
      * @return the new virtual sensor
      * @throws WrappedWebApplicationException event type registration failed
      */
