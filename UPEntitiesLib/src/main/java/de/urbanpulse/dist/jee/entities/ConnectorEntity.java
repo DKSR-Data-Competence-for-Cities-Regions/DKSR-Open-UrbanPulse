@@ -10,9 +10,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * This code is published by DKSR Gmbh under the German Free Software License.
- * Please refer to the document in the link for usage, change and distribution information
- * https://www.hbz-nrw.de/produkte/open-access/lizenzen/dfsl/german-free-software-license
+ *
+ * @author <a href="christian.mueller@the-urban-institute.de"> Christian Mueller</a>
  */
 @Entity
 @NamedQueries({
@@ -34,7 +33,8 @@ public class ConnectorEntity extends AbstractUUIDEntity {
     @OneToMany(mappedBy = "connector")
     private List<SensorEntity> sensors;
 
-
+    private String backchannelEndpoint;
+    private String backchannelKey;
 
     public ConnectorEntity() {
         sensors = new LinkedList<>();
@@ -79,5 +79,19 @@ public class ConnectorEntity extends AbstractUUIDEntity {
         this.sensors.add(sensor);
     }
 
+    public String getBackchannelEndpoint() {
+        return backchannelEndpoint;
+    }
 
+    public void setBackchannelEndpoint(String backchannelEndpoint) {
+        this.backchannelEndpoint = backchannelEndpoint;
+    }
+
+    public String getBackchannelKey() {
+        return backchannelKey;
+    }
+
+    public void setBackchannelKey(String backchannelKey) {
+        this.backchannelKey = backchannelKey;
+    }
 }
