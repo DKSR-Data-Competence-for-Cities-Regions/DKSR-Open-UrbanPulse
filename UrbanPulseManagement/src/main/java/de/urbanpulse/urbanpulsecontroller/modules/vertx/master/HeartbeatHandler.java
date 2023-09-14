@@ -37,11 +37,11 @@ public class HeartbeatHandler {
     @EJB
     private UPModuleDAO moduleDAO;
 
-    @Inject
+    /*@Inject
     private EmailSender emailSender;
 
     @Resource(lookup = "HeartbeatEMail")
-    private Session mailSession;
+    private Session mailSession;*/
 
     @Resource
     private TimerService timerService;
@@ -85,7 +85,7 @@ public class HeartbeatHandler {
             LOGGER.log(Level.SEVERE, "got heartbeat for unknown module with id [{0}]", moduleId);
             String subject = "Heartbeat";
             String body = moduleId + ": heartbeat for unknown module";
-            emailSender.sendEmail(mailSession, subject, body);
+            //emailSender.sendEmail(mailSession, subject, body);
             // heartbeat received from module that is no longer known (e.g. cleared because of a too old heartbeat earlier)
             callback.ifPresent(c -> c.done(new JsonObject().put("ERROR", "Unknown module!"), null));
         } else {
@@ -93,7 +93,7 @@ public class HeartbeatHandler {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, "got heartbeat for module with id [{0}]", moduleId);
                 String subject = "Heartbeat";
                 String body = moduleId + ": heartbeat received after error";
-                emailSender.sendEmail(mailSession, subject, body);
+                //emailSender.sendEmail(mailSession, subject, body);
             }
             module.setLastHeartbeat(new Date());
             module.setMailSent(false);
@@ -106,7 +106,8 @@ public class HeartbeatHandler {
 
     public int getTimeout() {
         try {
-            return Integer.parseInt(mailSession.getProperty("mail.heartbeat.timeout"));
+            //return Integer.parseInt(mailSession.getProperty("mail.heartbeat.timeout"));
+            return 60000;
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "cannot parse value for mail.heartbeat.timeout. Using default");
             return 60000;
@@ -128,9 +129,9 @@ public class HeartbeatHandler {
                     body = module.getId() + ": no heartbeat for " + ((now - heartbeat.getTime()) / 1000) + " seconds";
                 }
                 body += " (" + module.getModuleType() + ")";
-                if (emailSender.sendEmail(mailSession, subject, body)) {
+               /* if (emailSender.sendEmail(mailSession, subject, body)) {
                     module.setMailSent(true);
-                }
+                }*/
             }
             clearModule(module);
         }
