@@ -18,22 +18,16 @@
     </properties>
 
     <dependencies>
-
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>up-monitoring</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>up-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
-      <dependency>
-        <groupId>io.micrometer</groupId>
-        <artifactId>micrometer-core</artifactId>
-        <version>${micrometer.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-micrometer-metrics</artifactId>
-        <version>3.9.4</version>
-      </dependency>
 
         <!--Vertx provided dependencies -->
         <dependency>
@@ -125,7 +119,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>io.vertx.core.Launcher</mainClass>
+                            <mainClass>de.urbanpulse.vertx.launcher.UrbanPulseLauncher</mainClass>
                             <classpathPrefix>libs/</classpathPrefix>
                         </manifest>
                         <manifestEntries>
@@ -169,6 +163,19 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                    <repository>${docker.registry}/persistence</repository>
+                    <useMavenSettingsForAuth>${docker.registry.useMavenSettingsForAuth}</useMavenSettingsForAuth>
+                    <!-- Use this to add a version tag. But only one <tag> element supported. <tag>${project.version}</tag>-->
+                    <tag>latest</tag>
+                    <contextDirectory>./</contextDirectory>
+                    <skipDockerInfo>true</skipDockerInfo>
+                </configuration>
             </plugin>
         </plugins>
     </build>

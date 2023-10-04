@@ -15,12 +15,8 @@ import io.vertx.core.logging.LoggerFactory;
  * This is an extended HashMap of LinkedBlockingQueues. It offers the special function drainMostImportant
  * that drains the most important queue to the given collection. Details in description of that method
  *
- *
- * This code is published by DKSR Gmbh under the German Free Software License.
- * Please refer to the document in the link for usage, change and distribution information
- * https://www.hbz-nrw.de/produkte/open-access/lizenzen/dfsl/german-free-software-license
+ * @author <a href="stephan.spielmann@the-urban-institute.de">Stephan Spielmann</a>
  */
-
 public class PrioritizingHashMap extends HashMap<String, LinkedBlockingQueue<JsonObject>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PrioritizingHashMap.class);
@@ -191,7 +187,7 @@ public class PrioritizingHashMap extends HashMap<String, LinkedBlockingQueue<Jso
         if (this.maxElements != other.maxElements) {
             return false;
         }
-
+        
         return this.maxTimeMillis == other.maxTimeMillis;
     }
 }

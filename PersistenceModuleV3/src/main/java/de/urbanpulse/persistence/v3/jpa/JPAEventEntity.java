@@ -7,10 +7,6 @@ import javax.persistence.*;
 
 /**
  * entity for JPA events, table name can be overridden via {@link EclipseLinkTableNameSessionCustomizer}
- *
- * This code is published by DKSR Gmbh under the German Free Software License.
- * Please refer to the document in the link for usage, change and distribution information
- * https://www.hbz-nrw.de/produkte/open-access/lizenzen/dfsl/german-free-software-license
  */
 @Table(name = "up_events",
         //This already creates an index for the unique columns - adding them to indexes has no effect

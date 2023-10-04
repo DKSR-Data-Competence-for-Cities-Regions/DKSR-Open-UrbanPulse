@@ -12,15 +12,11 @@ import io.vertx.serviceproxy.ServiceBinder;
 /**
  * outbound verticle, can be queried via the vert.x eventbus using a service
  * proxy
- *
- * This code is published by DKSR Gmbh under the German Free Software License.
- * Please refer to the document in the link for usage, change and distribution information
- * https://www.hbz-nrw.de/produkte/open-access/lizenzen/dfsl/german-free-software-license
  */
 public class OutboundVerticle extends AbstractVerticle {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(OutboundVerticle.class);
-
+   
     private String queryAddress;
     private MessageConsumer<JsonObject> serviceProxyConsumer;
 

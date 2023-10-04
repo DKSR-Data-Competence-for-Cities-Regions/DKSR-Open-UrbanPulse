@@ -13,6 +13,8 @@
     <class>de.urbanpulse.dist.jee.entities.UserEntity</class>
     <class>de.urbanpulse.dist.jee.entities.VirtualSensorEntity</class>
     <class>de.urbanpulse.dist.jee.entities.HypercatMetadataEntity</class>
+    <class>de.urbanpulse.urbanpulsecontroller.admin.entities.modules.SqlAnalyticsSetupEntity</class>
+    <class>de.urbanpulse.urbanpulsecontroller.admin.entities.modules.BackchannelSetupEntity</class>
     <class>de.urbanpulse.urbanpulsecontroller.admin.entities.modules.ConnectionDataEntity</class>
     <class>de.urbanpulse.urbanpulsecontroller.admin.entities.modules.InboundSetupEntity</class>
     <class>de.urbanpulse.urbanpulsecontroller.admin.entities.modules.PersistenceV3SetupEntity</class>

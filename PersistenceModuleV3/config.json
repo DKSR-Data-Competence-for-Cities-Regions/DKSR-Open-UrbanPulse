@@ -32,5 +32,16 @@
       "url": "pulsar://localhost:6650",
       "subscriptionName": "persistence-consumer",
       "address": "thePersistence"
+    },
+    "metricsServiceConfig": {
+        "enabled": false,
+        "logMetrics": false,
+        "metricsInterval": 60000,
+        "metricsHandler": {
+            "de.urbanpulse.monitoring.HTTPMonitoringVerticle": {
+                "host": "0.0.0.0",
+                "port": 8888
+            }
+        }
     }
 }

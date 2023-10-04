@@ -13,9 +13,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * This code is published by DKSR Gmbh under the German Free Software License.
- * Please refer to the document in the link for usage, change and distribution information
- * https://www.hbz-nrw.de/produkte/open-access/lizenzen/dfsl/german-free-software-license
+ *
+ * @author Christian Müller <christian.mueller@the-urban-institute.de>
  */
 public class StorageServiceProviderVerticle extends AbstractVerticle {
 

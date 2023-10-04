@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import de.urbanpulse.persistence.v3.storage.StorageService;
 import static de.urbanpulse.persistence.v3.storage.cache.FirstLevelStorageConst.FIRST_LEVEL_STORAGE_SERVICE_ADDRESS;
+import de.urbanpulse.vertx.launcher.UrbanPulseLauncher;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import de.urbanpulse.monitoring.helper.GaugeBuilder;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.eventbus.Message;
@@ -46,6 +48,7 @@ public class InboundVerticle extends AbstractVerticle {
         long maxTimeMillis = secondLevelConfig.getLong("maxTimeMillis", 5000L);
         eventQueues = new PrioritizingHashMap(maxBatchSize, maxTimeMillis);
 
+        UrbanPulseLauncher.getMetricsRegistry().ifPresent(this::registerMeters);
 
         firstLevelStorage = new ServiceProxyBuilder(vertx)
                 .setAddress(FIRST_LEVEL_STORAGE_SERVICE_ADDRESS)
@@ -102,7 +105,21 @@ public class InboundVerticle extends AbstractVerticle {
 
     }
 
-
+    private void registerMeters(MeterRegistry registry) {
+        if (registry != null) {
+            totalEventsReceivedCounter = Counter.builder("up_persistence_events_received")
+                    .description("Number of events received.")
+                    .register(registry);
+            
+            
+            
+            GaugeBuilder.build(registry, "up_persistence_inbound_events_in_queue", eventQueues, PrioritizingHashMap::getTotalCount)
+                    .description("Number of events in persistence inbound queue.")
+                    .register(registry);
+            
+          
+        }
+    }
 
     private void incTotalEventsCounter(double amount) {
         if (totalEventsReceivedCounter != null) {
@@ -122,7 +139,7 @@ public class InboundVerticle extends AbstractVerticle {
     }
 
     @Override
-    public void stop(Promise<Void> stopPromise) {
+    public void stop(Promise<Void> stopPromise) {  
         messageConsumer.close();
         stopPromise.complete();
     }

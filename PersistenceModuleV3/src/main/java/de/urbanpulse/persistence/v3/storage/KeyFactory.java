@@ -14,9 +14,7 @@ import io.vertx.core.json.JsonObject;
 /**
  * generates various keys from a sensor event {@link JsonObject} to be used in a {@link de.urbanpulse.persistence.v3.azure.AzureEventEntity} / {@link JPAEventEntity}
  *
- * This code is published by DKSR Gmbh under the German Free Software License.
- * Please refer to the document in the link for usage, change and distribution information
- * https://www.hbz-nrw.de/produkte/open-access/lizenzen/dfsl/german-free-software-license
+ * @author dbanz
  */
 public class KeyFactory {
 
