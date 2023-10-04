@@ -124,7 +124,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>de.urbanpulse.vertx.launcher.UrbanPulseLauncher</mainClass>
+                            <mainClass>io.vertx.core.Launcher</mainClass>
                             <classpathPrefix>libs/</classpathPrefix>
                         </manifest>
                         <manifestEntries>
