@@ -18,7 +18,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import city.ui.shared.commons.time.UPDateTimeFormat;
-import de.urbanpulse.monitoring.helper.GaugeBuilder;
 import de.urbanpulse.outbound.QueryConfig;
 import de.urbanpulse.persistence.v3.outbound.BatchSender;
 import static de.urbanpulse.persistence.v3.storage.AbstractSecondLevelStorage.BATCH_SIZE;
@@ -120,12 +119,6 @@ public class ElasticSearchSecondLevelStorageServiceImpl extends AbstractStorage 
 
     @Override
     protected void registerAdditionalMeters(MeterRegistry registry) {
-        if (registry != null) {
-            GaugeBuilder.build(registry, METRICS_PREFIX + "_running_bulk_requests", currentAmountRunningBulkRequests, AtomicInteger::get)
-                    .register(registry);   
-            GaugeBuilder.build(registry, METRICS_PREFIX + "_events_in_queue", eventsInQueue, AtomicInteger::get)
-                    .register(registry);
-        }
     }
 
     @Override
@@ -277,9 +270,7 @@ public class ElasticSearchSecondLevelStorageServiceImpl extends AbstractStorage 
         LOGGER.debug("Incrementing request counter to: "
                 + currentAmountRunningBulkRequests.incrementAndGet());
 
-        Optional<Timer.Sample> optionalTimer = registry
-                .map(reg -> Optional.of(Timer.start(reg)))
-                .orElse(Optional.empty());
+
 
         client.bulkAsync(bulkRequest, context).onComplete(bulkHndlr -> {
             currentAmountRunningBulkRequests.decrementAndGet();
@@ -290,9 +281,7 @@ public class ElasticSearchSecondLevelStorageServiceImpl extends AbstractStorage 
                 LOGGER.debug("Finished with the bulkAsync insert at: " + ZonedDateTime.now()
                         + " with ID: " + counterId);
 
-                if (registry.isPresent()) {
-                    optionalTimer.ifPresent(timer -> timer.stop(registry.get().timer("persistence_persist_duration")));
-                }
+
                 double numberOfDocuments = bulkRequest.numberOfActions();
                 incTotalEventsPersistedCounter(numberOfDocuments);
 

@@ -19,9 +19,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>up-monitoring</artifactId>
-            <version>${project.version}</version>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>${micrometer.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId><!-- https://github.com/vert-x3/vertx-micrometer-metrics/issues/109 -->
+            <version>${micrometer.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

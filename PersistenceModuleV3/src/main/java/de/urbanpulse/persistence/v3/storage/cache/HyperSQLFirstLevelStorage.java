@@ -2,20 +2,6 @@ package de.urbanpulse.persistence.v3.storage.cache;
 
 import city.ui.shared.commons.time.UPDateTimeFormat;
 import de.urbanpulse.outbound.QueryConfig;
-import static de.urbanpulse.persistence.v3.storage.KeyFactory.ROW_KEY_PATTERN;
-
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
-
-import javax.persistence.*;
-
 import de.urbanpulse.persistence.v3.jpa.JPAEventEntity;
 import de.urbanpulse.persistence.v3.jpa.JPAEventEntityFactory;
 import de.urbanpulse.persistence.v3.jpa.JPAWrapperIterator;
@@ -23,25 +9,26 @@ import de.urbanpulse.persistence.v3.outbound.BatchSender;
 import de.urbanpulse.persistence.v3.storage.AbstractStorage;
 import de.urbanpulse.persistence.v3.storage.KeyFactory;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.Promise;
-import io.vertx.core.Vertx;
+import io.vertx.core.*;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.serviceproxy.ServiceException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.Objects;
-import java.util.Queue;
+
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+
+import static de.urbanpulse.persistence.v3.storage.KeyFactory.ROW_KEY_PATTERN;
+
 /**
- * simple implementation for caching events in HyperSQL in-memory DB via JPA
- *
  * This code is published by DKSR Gmbh under the German Free Software License.
  * Please refer to the document in the link for usage, change and distribution information
  * https://www.hbz-nrw.de/produkte/open-access/lizenzen/dfsl/german-free-software-license

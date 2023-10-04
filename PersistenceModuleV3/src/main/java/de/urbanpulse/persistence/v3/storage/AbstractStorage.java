@@ -1,6 +1,5 @@
 package de.urbanpulse.persistence.v3.storage;
 
-import de.urbanpulse.vertx.launcher.UrbanPulseLauncher;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.vertx.core.AsyncResult;
@@ -22,14 +21,11 @@ public abstract class AbstractStorage implements StorageService {
 
     protected final Vertx vertx;
     protected final JsonObject config;
-    protected final Optional<MeterRegistry> registry;
     protected Counter totalEventsPersistedCounter;
 
     public AbstractStorage(Vertx vertx, JsonObject config) {
         this.vertx = vertx;
         this.config = config;
-        registry = UrbanPulseLauncher.getMetricsRegistry();
-        registry.ifPresent(this::registerMeters);
     }
 
     public abstract void stop(Handler<AsyncResult<Void>> result);
