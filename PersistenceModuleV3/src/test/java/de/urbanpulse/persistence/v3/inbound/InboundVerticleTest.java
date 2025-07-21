@@ -21,9 +21,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
-import io.vertx.micrometer.MicrometerMetricsOptions;
-import io.vertx.micrometer.VertxPrometheusOptions;
-import io.vertx.micrometer.backends.BackendRegistries;
+
 import org.junit.After;
 
 /**
@@ -48,10 +46,10 @@ public class InboundVerticleTest {
      */
     @Before
     public void setUp(TestContext context) throws IOException {
-        BackendRegistries.setupBackend(new MicrometerMetricsOptions()
+        /*BackendRegistries.setupBackend(new MicrometerMetricsOptions()
                 .setPrometheusOptions(new VertxPrometheusOptions()
                         .setEnabled(true))
-                .setEnabled(true));
+                .setEnabled(true));*/
 
         verticle = new InboundVerticle();
         vertx = Vertx.vertx();
